@@ -4,7 +4,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.ui.theme.MainViewModel
 
 
@@ -28,6 +31,22 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
+
+    var isLoading by remember { mutableStateOf(false) }
+
+    // Simple email and password validation
+    fun isFormValid(): Boolean {
+        if (email.isBlank() || !email.contains("@")) {
+            error = "Invalid email"
+            return false
+        }
+        if (password.length < 6) {
+            error = "Password must be at least 6 characters"
+            return false
+        }
+        return true
+    }
+
 
     Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Login", style = MaterialTheme.typography.h4)
@@ -38,18 +57,27 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            viewModel.loginUser(email, password) { success ->
-                if (success) {
-                    navController.navigate("main_screen_route") {
-                        popUpTo("login") { inclusive = true }
+            if (isFormValid()) {
+                isLoading = true
+                viewModel.loginUser(email, password) { success ->
+                    isLoading = false
+                    if (success) {
+                        navController.navigate(Screen.CreatePost.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    } else {
+                        error = "Login failed"
                     }
-                } else {
-                    error = "Login failed"
                 }
             }
         }) {
-            Text(text = "Login")
+            if (isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            } else {
+                Text(text = "Login")
+            }
         }
+
 
         error?.let {
             Spacer(modifier = Modifier.height(8.dp))
@@ -57,7 +85,7 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.navigate("signup") }) {
+        TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
             Text("Don't have an account? Sign up")
         }
     }

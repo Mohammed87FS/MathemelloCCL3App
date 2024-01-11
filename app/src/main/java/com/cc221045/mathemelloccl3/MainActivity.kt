@@ -1,12 +1,16 @@
 package com.cc221045.mathemelloccl3
 
 
+import LoginScreen
+import SignUpScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,15 +33,18 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object CreatePost : Screen("createPost", "Create Post", Icons.Filled.Add)
     object PostsList : Screen("postsList", "Posts List", Icons.Filled.List)
     object LikedPosts : Screen("likedPosts", "Liked Posts", Icons.Filled.Favorite)
-
+    object Login : Screen("login", "Login", Icons.Filled.ExitToApp) // Updated icon for Login
+    object SignUp : Screen("signup", "Sign Up", Icons.Filled.AccountCircle) // Icon for Sign Up
 }
 
-val screens = listOf(Screen.CreatePost, Screen.PostsList, Screen.LikedPosts) // Include LikedPosts
+
+
+val screens = listOf(Screen.CreatePost, Screen.PostsList, Screen.LikedPosts,Screen.Login,Screen.SignUp) // Include LikedPosts
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
-
+    private var navController: NavController? = null
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,16 +70,15 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
                     NavHost(
+                        modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        startDestination = "splashScreen",
-                        modifier = Modifier.padding(innerPadding)
+                        startDestination = if (auth.currentUser != null) Screen.CreatePost.route else Screen.Login.route
                     ) {
-                        composable("splashScreen") {
-                            SplashScreen(onSplashComplete = {
-                                navController.navigate(Screen.CreatePost.route) {
-                                    popUpTo("splashScreen") { inclusive = true }
-                                }
-                            })
+                        composable(Screen.Login.route) {
+                            LoginScreen(viewModel, navController)
+                        }
+                        composable(Screen.SignUp.route) {
+                            SignUpScreen(viewModel, navController)
                         }
                         composable(Screen.CreatePost.route) {
                             CreatePostScreen(viewModel, navController)
@@ -111,44 +118,22 @@ class MainActivity : ComponentActivity() {
 
     private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
         val user = firebaseAuth.currentUser
-        if (user != null) {
-            // User is signed in
-            // TODO: Navigate the user to the main part of your app
-        } else {
-            // User is signed out
-            // TODO: Navigate the user to the login screen
+
+        runOnUiThread {
+            if (user != null) {
+                navController?.navigate(Screen.CreatePost.route) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                }
+            } else {
+                navController?.navigate(Screen.Login.route) {
+                    popUpTo(Screen.CreatePost.route) { inclusive = true }
+                }
+            }
         }
     }
 
-    // Placeholder function for sign-up logic
-    private fun signUpUser(email: String, password: String) {
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign up success
-                    val user = auth.currentUser
-                    // TODO: Update UI with user information
-                } else {
-                    // Sign up error
-                    // TODO: Handle sign up failure
-                }
-            }
-    }
 
-    // Placeholder function for sign-in logic
-    private fun signInUser(email: String, password: String) {
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success
-                    val user = auth.currentUser
-                    // TODO: Update UI with user information
-                } else {
-                    // Sign in error
-                    // TODO: Handle sign in failure
-                }
-            }
-    }
+
 }
 
 
