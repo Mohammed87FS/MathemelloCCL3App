@@ -4,15 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.data.PostDao
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
-class MainViewModel(private val postDao: PostDao) : ViewModel() {
+class MainViewModel(private val postDao: PostDao,
+                    private val auth: FirebaseAuth) : ViewModel()  {
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts
 
@@ -22,6 +24,17 @@ class MainViewModel(private val postDao: PostDao) : ViewModel() {
             _posts.value = updatedPosts
 
 
+        }
+    }
+    fun loginUser(email: String, password: String, onResult: (Boolean) -> Unit) {
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            onResult(task.isSuccessful)
+        }
+    }
+
+    fun registerUser(email: String, password: String, onResult: (Boolean) -> Unit) {
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            onResult(task.isSuccessful)
         }
     }
 
