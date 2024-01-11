@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "876836105258",
+    "project_id": "mathemello-3dba5",
+    "storage_bucket": "mathemello-3dba5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:876836105258:android:032ece063b32f288aa6753",
+        "android_client_info": {
+          "package_name": "com.cc221045.mathemelloccl3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcZPdRfF6d2KvL-aWkYXI10SZX3vzFo1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
