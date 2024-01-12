@@ -45,6 +45,7 @@ val screens = listOf(Screen.CreatePost, Screen.PostsList, Screen.LikedPosts,Scre
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private var navController: NavController? = null
+    private lateinit var viewModel: MainViewModel
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,9 +57,8 @@ class MainActivity : ComponentActivity() {
         ).fallbackToDestructiveMigration().build()
 
 
-        val viewModelFactory = MainViewModelFactory(db.postDao(), auth)
-        val viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-
+        val viewModelFactory = MainViewModelFactory(db.postDao(), FirebaseAuth.getInstance())
+        viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
 
 
@@ -68,21 +68,24 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
 
 
-                Scaffold(bottomBar = { BottomNavigationBar(navController) }) { innerPadding ->
+                Scaffold(bottomBar = { BottomNavigationBar(navController,viewModel) }) { innerPadding ->
                     NavHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        startDestination = if (auth.currentUser != null) Screen.CreatePost.route else Screen.Login.route
+                        startDestination = getStartDestination()
                     ) {
+
                         composable(Screen.Login.route) {
                             LoginScreen(viewModel, navController)
                         }
                         composable(Screen.SignUp.route) {
                             SignUpScreen(viewModel, navController)
                         }
+
                         composable(Screen.CreatePost.route) {
                             CreatePostScreen(viewModel, navController)
                         }
+
                         composable(Screen.PostsList.route) {
                             PostsListScreen(viewModel, navController)
                         }
@@ -100,11 +103,20 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
+
                     }
                 }
             }
         }
     }
+    private fun getStartDestination(): String {
+        return when {
+            auth.currentUser != null && viewModel.isAdmin -> Screen.CreatePost.route
+            auth.currentUser != null -> Screen.PostsList.route
+            else -> Screen.Login.route
+        }
+    }
+
 
     override fun onStart() {
         super.onStart()
