@@ -57,19 +57,20 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            if (isFormValid()) {
-                isLoading = true
-                viewModel.loginUser(email, password) { success ->
-                    isLoading = false
-                    if (success) {
-                        navController.navigate(Screen.CreatePost.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
-                        }
+            viewModel.loginUser(email, password) { isSuccess, isAdmin ->
+                if (isSuccess) {
+                    if (isAdmin) {
+                        // Navigate to admin-specific screen
+                        navController.navigate(Screen.CreatePost.route)
                     } else {
+                        // Navigate to regular user screen
+                        navController.navigate(Screen.PostsList.route)
+                    }
+                } else {
                         error = "Login failed"
                     }
                 }
-            }
+
         }) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))

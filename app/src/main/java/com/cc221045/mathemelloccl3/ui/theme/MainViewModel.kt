@@ -1,5 +1,8 @@
 package com.cc221045.mathemelloccl3.ui.theme
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -13,10 +16,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
+
+
 class MainViewModel(private val postDao: PostDao,
                     private val auth: FirebaseAuth) : ViewModel()  {
+
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts
+
+    private val adminEmail = "admin@admin.com"
+    private val adminPassword = "adminadmin"
+
+    var isAdmin by mutableStateOf(false)
 
     fun reloadPosts() {
         viewModelScope.launch {
@@ -26,11 +37,21 @@ class MainViewModel(private val postDao: PostDao,
 
         }
     }
-    fun loginUser(email: String, password: String, onResult: (Boolean) -> Unit) {
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            onResult(task.isSuccessful)
+    fun loginUser(email: String, password: String, onResult: (Boolean, Boolean) -> Unit) {
+        if (email == adminEmail && password == adminPassword) {
+            // Credentials match the admin's
+            isAdmin = true
+            onResult(true, true) // Successful login and is admin
+        } else {
+            // Proceed with regular login
+            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    isAdmin = false
+                    onResult(task.isSuccessful, false) // True if login is successful, false for isAdmin
+                }
         }
     }
+
 
     fun registerUser(email: String, password: String, onResult: (Boolean) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
