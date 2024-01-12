@@ -97,7 +97,7 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
         screens.forEach { screen ->
             // Only show CreatePost option for admin users
             if (!viewModel.isAdmin && screen == Screen.CreatePost) return@forEach
-
+            if (viewModel.isAdmin && screen == Screen.LikedPosts) return@forEach
             NavigationBarItem(
                 icon = { Icon(screen.icon, contentDescription = null) },
                 label = { Text(screen.label) },

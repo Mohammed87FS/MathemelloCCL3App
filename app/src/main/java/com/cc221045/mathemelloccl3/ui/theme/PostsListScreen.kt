@@ -7,10 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -21,13 +18,16 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.cc221045.mathemelloccl3.data.Post
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
 
 @Composable
 fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) {
@@ -94,6 +94,7 @@ fun PostItem(post: Post, viewModel: MainViewModel, navController: NavHostControl
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        if (!viewModel.isAdmin){
                         IconButton(
                             onClick = {
                                 if (post.isLiked) viewModel.unlikePost(post)
@@ -104,12 +105,13 @@ fun PostItem(post: Post, viewModel: MainViewModel, navController: NavHostControl
                                 imageVector = if (post.isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                                 contentDescription = "Like"
                             )
-                        }
+                        }}
+                        if (viewModel.isAdmin){
                         AnimatedButton(
                             text = "Edit",
                             onClick = { navController.navigate("editPost/${post.id}") })
                         AnimatedButton(text = "Delete", onClick = { viewModel.deletePost(post) })
-                    }
+                    }}
                 }
             }
         }
