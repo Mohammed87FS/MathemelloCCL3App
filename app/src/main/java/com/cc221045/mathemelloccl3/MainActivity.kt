@@ -4,6 +4,7 @@ package com.cc221045.mathemelloccl3
 import CreateRequestScreen
 import LoginScreen
 import RequestsListScreen
+import SettingsScreen
 import SignUpScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -36,6 +37,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     object PostsList : Screen("postsList", "Posts List", Icons.AutoMirrored.Filled.List)
     object LikedPosts : Screen("likedPosts", "Liked Posts", Icons.Filled.Favorite)
     object Login : Screen("login", "Login", Icons.AutoMirrored.Filled.ExitToApp)
+    object Settings : Screen("settings", "Settings", Icons.AutoMirrored.Filled.List)
     object SignUp : Screen("signup", "Sign Up", Icons.Filled.AccountCircle)
     object CreateRequest : Screen("createRequest", "Create Request", Icons.Filled.Add)
     object RequestsList : Screen("requestsList", "Requests List", Icons.AutoMirrored.Filled.List)
@@ -44,7 +46,7 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
 
 
 
-val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Login,Screen.SignUp) // Include LikedPosts
+val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp) // Include LikedPosts
 
 
 class MainActivity : ComponentActivity() {
@@ -85,6 +87,9 @@ class MainActivity : ComponentActivity() {
                         composable(Screen.Login.route) {
                             LoginScreen(viewModel, navController)
                         }
+                        composable(Screen.Settings.route) {
+                            SettingsScreen(viewModel, navController)
+                        }
                         composable(Screen.SignUp.route) {
                             SignUpScreen(viewModel, navController)
                         }
@@ -93,14 +98,14 @@ class MainActivity : ComponentActivity() {
                             CreatePostScreen(viewModel, navController)
                         }
                         composable(Screen.CreateRequest.route) {
-                            CreateRequestScreen(viewModel,userEmail = viewModel.userEmail) {
+                            CreateRequestScreen(viewModel, userEmail = viewModel.userEmail) {
 
                                 navController.navigate(Screen.RequestsList.route)
                             }
                         }
                         composable(Screen.RequestsList.route) {
 
-                            RequestsListScreen(viewModel,userEmail = viewModel.userEmail, isAdmin = viewModel.isAdmin)
+                            RequestsListScreen(viewModel, userEmail = viewModel.userEmail, isAdmin = viewModel.isAdmin)
                         }
 
                         composable(Screen.PostsList.route) {

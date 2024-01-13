@@ -1,9 +1,11 @@
 package com.cc221045.mathemelloccl3.ui.theme
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -31,7 +33,39 @@ class MainViewModel(private val postDao: PostDao,
     private val adminPassword = "adminadmin"
 
     var isAdmin by mutableStateOf(false)
-    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+
+
+
+    var userEmail = MutableLiveData<String>()
+
+    fun loginUser(email: String, password: String, onResult: (Boolean, Boolean) -> Unit) {
+        if (email == adminEmail && password == adminPassword) {
+            // Admin credentials
+            isAdmin = true
+            userEmail.value = email
+            onResult(true, true)
+        } else {
+            // Regular user login
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    isAdmin = false
+                    userEmail.value = auth.currentUser?.email ?: ""
+                    onResult(true, false)
+                } else {
+                    onResult(false, false)
+                }
+            }
+        }
+    }
+    fun logout() {
+
+        auth.signOut()
+        userEmail.value = ""
+        isAdmin = false
+    }
+    init {
+        Log.d("MainViewModel", "User Email: $userEmail")
+    }
 
     fun addRequest(userEmail: String, title: String, content: String) {
         viewModelScope.launch {
@@ -45,7 +79,7 @@ class MainViewModel(private val postDao: PostDao,
         }
     }
 
-    fun getUserRequests(userEmail: String): LiveData<List<Request>> {
+    fun getUserRequests(userEmail: String?): LiveData<List<Request>> {
         return requestDao.getRequestsByUser(userEmail).asLiveData()
     }
 
@@ -62,20 +96,7 @@ class MainViewModel(private val postDao: PostDao,
 
         }
     }
-    fun loginUser(email: String, password: String, onResult: (Boolean, Boolean) -> Unit) {
-        if (email == adminEmail && password == adminPassword) {
-            // Credentials match the admin's
-            isAdmin = true
-            onResult(true, true) // Successful login and is admin
-        } else {
-            // Proceed with regular login
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-                    isAdmin = false
-                    onResult(task.isSuccessful, false) // True if login is successful, false for isAdmin
-                }
-        }
-    }
+
 
 
     fun registerUser(email: String, password: String, onResult: (Boolean) -> Unit) {

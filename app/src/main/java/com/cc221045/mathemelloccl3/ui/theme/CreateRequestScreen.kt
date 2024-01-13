@@ -18,13 +18,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import com.cc221045.mathemelloccl3.ui.theme.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissionComplete: () -> Unit) {
+fun CreateRequestScreen(viewModel: MainViewModel, userEmail: MutableLiveData<String>, onSubmissionComplete: () -> Unit) {
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }

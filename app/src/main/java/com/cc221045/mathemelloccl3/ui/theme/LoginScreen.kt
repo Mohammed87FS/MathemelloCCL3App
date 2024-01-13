@@ -91,3 +91,21 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         }
     }
 }
+
+@Composable
+fun SettingsScreen(viewModel: MainViewModel, navController: NavController) {
+    // Layout for settings
+    Column(modifier = Modifier.padding(16.dp)) {
+        //... other settings options ...
+
+        Button(onClick = {
+            viewModel.logout()
+            navController.navigate(Screen.Login.route) {
+                popUpTo(Screen.PostsList.route) { inclusive = true }
+            }
+        }) {
+            Text("Logout")
+        }
+    }
+}
+
