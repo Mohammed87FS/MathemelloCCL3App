@@ -9,6 +9,8 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.data.PostDao
+import com.cc221045.mathemelloccl3.data.Request
+import com.cc221045.mathemelloccl3.data.RequestDao
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +21,8 @@ import kotlinx.coroutines.launch
 
 
 class MainViewModel(private val postDao: PostDao,
-                    private val auth: FirebaseAuth) : ViewModel()  {
+                    private val auth: FirebaseAuth,
+                    private val requestDao: RequestDao) : ViewModel()  {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts
@@ -28,6 +31,28 @@ class MainViewModel(private val postDao: PostDao,
     private val adminPassword = "adminadmin"
 
     var isAdmin by mutableStateOf(false)
+    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+
+    fun addRequest(userEmail: String, title: String, content: String) {
+        viewModelScope.launch {
+            val newRequest = Request(
+                userEmail = userEmail,
+                title = title,
+                content = content,
+                timestamp = System.currentTimeMillis()
+            )
+            requestDao.insertRequest(newRequest)
+        }
+    }
+
+    fun getUserRequests(userEmail: String): LiveData<List<Request>> {
+        return requestDao.getRequestsByUser(userEmail).asLiveData()
+    }
+
+    fun getAllRequests(): LiveData<List<Request>> {
+        return requestDao.getAllRequests().asLiveData()
+    }
+
 
     fun reloadPosts() {
         viewModelScope.launch {

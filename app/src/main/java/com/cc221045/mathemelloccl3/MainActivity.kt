@@ -1,18 +1,20 @@
 package com.cc221045.mathemelloccl3
 
 
+import CreateRequestScreen
 import LoginScreen
+import RequestsListScreen
 import SignUpScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -31,15 +33,18 @@ import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
     object CreatePost : Screen("createPost", "Create Post", Icons.Filled.Add)
-    object PostsList : Screen("postsList", "Posts List", Icons.Filled.List)
+    object PostsList : Screen("postsList", "Posts List", Icons.AutoMirrored.Filled.List)
     object LikedPosts : Screen("likedPosts", "Liked Posts", Icons.Filled.Favorite)
-    object Login : Screen("login", "Login", Icons.Filled.ExitToApp) // Updated icon for Login
-    object SignUp : Screen("signup", "Sign Up", Icons.Filled.AccountCircle) // Icon for Sign Up
+    object Login : Screen("login", "Login", Icons.AutoMirrored.Filled.ExitToApp)
+    object SignUp : Screen("signup", "Sign Up", Icons.Filled.AccountCircle)
+    object CreateRequest : Screen("createRequest", "Create Request", Icons.Filled.Add)
+    object RequestsList : Screen("requestsList", "Requests List", Icons.AutoMirrored.Filled.List)
+
 }
 
 
 
-val screens = listOf(Screen.CreatePost, Screen.PostsList, Screen.LikedPosts,Screen.Login,Screen.SignUp) // Include LikedPosts
+val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Login,Screen.SignUp) // Include LikedPosts
 
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +62,9 @@ class MainActivity : ComponentActivity() {
         ).fallbackToDestructiveMigration().build()
 
 
-        val viewModelFactory = MainViewModelFactory(db.postDao(), FirebaseAuth.getInstance())
+
+
+        val viewModelFactory = MainViewModelFactory(db.postDao(),db.requestDao(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
 
@@ -84,6 +91,16 @@ class MainActivity : ComponentActivity() {
 
                         composable(Screen.CreatePost.route) {
                             CreatePostScreen(viewModel, navController)
+                        }
+                        composable(Screen.CreateRequest.route) {
+                            CreateRequestScreen(viewModel,userEmail = viewModel.userEmail) {
+
+                                navController.navigate(Screen.RequestsList.route)
+                            }
+                        }
+                        composable(Screen.RequestsList.route) {
+
+                            RequestsListScreen(viewModel,userEmail = viewModel.userEmail, isAdmin = viewModel.isAdmin)
                         }
 
                         composable(Screen.PostsList.route) {
