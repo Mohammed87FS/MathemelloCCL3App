@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -34,14 +35,14 @@ import com.cc221045.mathemelloccl3.ui.theme.*
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    object CreatePost : Screen("createPost", "Create Post", Icons.Filled.Add)
-    object PostsList : Screen("postsList", "Posts List", Icons.AutoMirrored.Filled.List)
-    object LikedPosts : Screen("likedPosts", "Liked Posts", Icons.Filled.Favorite)
-    object Login : Screen("login", "Login", Icons.AutoMirrored.Filled.ExitToApp)
-    object Settings : Screen("settings", "Settings", Icons.AutoMirrored.Filled.List)
-    object SignUp : Screen("signup", "Sign Up", Icons.Filled.AccountCircle)
-    object CreateRequest : Screen("createRequest", "Create Request", Icons.Filled.Add)
-    object RequestsList : Screen("requestsList", "Requests List", Icons.AutoMirrored.Filled.List)
+    object CreatePost : Screen("createPost", "", Icons.Filled.Add)
+    object PostsList : Screen("postsList", "", Icons.AutoMirrored.Filled.List)
+    object LikedPosts : Screen("likedPosts", "", Icons.Filled.Favorite)
+    object Login : Screen("login", "", Icons.AutoMirrored.Filled.ExitToApp)
+    object Settings : Screen("settings", "", Icons.Filled.Settings)
+    object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
+    object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
+    object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
 
 }
 
@@ -90,13 +91,13 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = getStartDestination()
                     ) {
-
-                        composable(Screen.Login.route) {
-                            LoginScreen(viewModel, navController)
-                        }
                         composable(Screen.Settings.route) {
                             SettingsScreen(viewModel, navController)
                         }
+                        composable(Screen.Login.route) {
+                            LoginScreen(viewModel, navController)
+                        }
+
                         composable(Screen.SignUp.route) {
                             SignUpScreen(viewModel, navController)
                         }

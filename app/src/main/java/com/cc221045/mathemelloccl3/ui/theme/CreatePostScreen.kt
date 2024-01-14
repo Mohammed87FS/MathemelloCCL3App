@@ -95,7 +95,8 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
 
     NavigationBar {
         screens.forEach { screen ->
-            // Only show option for admin ,users
+
+            if (screen == Screen.Login || screen == Screen.SignUp) return@forEach
             if (!viewModel.isAdmin && screen == Screen.CreatePost) return@forEach
             if (viewModel.isAdmin && screen == Screen.LikedPosts) return@forEach
             if (viewModel.isAdmin && screen == Screen.CreateRequest) return@forEach
