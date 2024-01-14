@@ -1,6 +1,5 @@
 package com.cc221045.mathemelloccl3.ui.theme
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,7 +35,10 @@ class MainViewModel(private val postDao: PostDao,
 
 
 
+
+
     var userEmail = MutableLiveData<String>()
+
 
     fun loginUser(email: String, password: String, onResult: (Boolean, Boolean) -> Unit) {
         if (email == adminEmail && password == adminPassword) {
@@ -63,9 +65,7 @@ class MainViewModel(private val postDao: PostDao,
         userEmail.value = ""
         isAdmin = false
     }
-    init {
-        Log.d("MainViewModel", "User Email: $userEmail")
-    }
+
 
     fun addRequest(userEmail: String, title: String, content: String) {
         viewModelScope.launch {

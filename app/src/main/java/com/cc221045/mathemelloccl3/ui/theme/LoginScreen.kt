@@ -106,6 +106,8 @@ fun SettingsScreen(viewModel: MainViewModel, navController: NavController) {
         }) {
             Text("Logout")
         }
+
     }
+
 }
 

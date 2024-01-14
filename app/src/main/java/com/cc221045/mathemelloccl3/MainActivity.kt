@@ -25,6 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
@@ -65,19 +66,25 @@ class MainActivity : ComponentActivity() {
 
 
 
-
         val viewModelFactory = MainViewModelFactory(db.postDao(),db.requestDao(), FirebaseAuth.getInstance())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
-
-
 
 
         setContent {
             KotloTheme {
                 val navController = rememberNavController()
 
+                Scaffold(bottomBar = {
 
-                Scaffold(bottomBar = { BottomNavigationBar(navController,viewModel) }) { innerPadding ->
+                    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+                    val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route)
+
+
+                    if (auth.currentUser != null && currentRoute !in hideBottomBarRoutes) {
+                        BottomNavigationBar(navController, viewModel)
+                    }
+                }) { innerPadding ->
                     NavHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
@@ -169,10 +176,3 @@ class MainActivity : ComponentActivity() {
 
 
 }
-
-
-
-
-
-
-
