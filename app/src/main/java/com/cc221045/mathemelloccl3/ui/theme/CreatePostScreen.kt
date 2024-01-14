@@ -89,30 +89,39 @@ fun CreatePostScreen(
 
 
 
+
 @Composable
 fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewModel) {
     val currentRoute = getCurrentRoute(navController)
 
     NavigationBar {
         screens.forEach { screen ->
+            // Determine if the screen should be displayed for the current user
+            val shouldDisplay = when (screen) {
+                Screen.CreatePost -> viewModel.isAdmin // Only for admin
+                Screen.LikedPosts -> !viewModel.isAdmin // Only for regular users
+                Screen.CreateRequest -> !viewModel.isAdmin // Only for regular users
+                Screen.Login, Screen.SignUp -> false // Exclude these screens
+                else -> true // All other screens are displayed for everyone
+            }
 
-            if (screen == Screen.Login || screen == Screen.SignUp) return@forEach
-            if (!viewModel.isAdmin && screen == Screen.CreatePost) return@forEach
-            if (viewModel.isAdmin && screen == Screen.LikedPosts) return@forEach
-            if (viewModel.isAdmin && screen == Screen.CreateRequest) return@forEach
-            NavigationBarItem(
-                icon = { Icon(screen.icon, contentDescription = null) },
-                label = { Text(screen.label) },
-                selected = currentRoute == screen.route,
-                onClick = {
-                    if (currentRoute != screen.route) {
-                        navController.navigate(screen.route)
+            // Add the screen to the navigation bar if it should be displayed
+            if (shouldDisplay) {
+                NavigationBarItem(
+                    icon = { Icon(screen.icon, contentDescription = null) },
+                    label = { Text(screen.label) },
+                    selected = currentRoute == screen.route,
+                    onClick = {
+                        if (currentRoute != screen.route) {
+                            navController.navigate(screen.route)
+                        }
                     }
-                }
-            )
+                )
+            }
         }
     }
 }
+
 
 
 @Composable

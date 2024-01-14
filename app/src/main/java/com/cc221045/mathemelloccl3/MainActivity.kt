@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
                     val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route)
 
 
-                    if (auth.currentUser != null && currentRoute !in hideBottomBarRoutes) {
+                    if (auth.currentUser != null || viewModel.isAdmin && currentRoute !in hideBottomBarRoutes) {
                         BottomNavigationBar(navController, viewModel)
                     }
                 }) { innerPadding ->
