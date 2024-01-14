@@ -11,6 +11,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -88,6 +89,10 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController) {
         error?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = it, color = MaterialTheme.colors.error)
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
+            Text("Already have an account? Log in")
         }
     }
 }
