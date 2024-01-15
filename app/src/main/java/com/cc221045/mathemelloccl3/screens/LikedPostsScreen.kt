@@ -1,4 +1,4 @@
-package com.cc221045.mathemelloccl3.ui.theme
+package com.cc221045.mathemelloccl3.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +14,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
 fun LikedPostsScreen(viewModel: MainViewModel, navController: NavHostController) {

@@ -1,4 +1,4 @@
-package com.cc221045.mathemelloccl3.ui.theme
+package com.cc221045.mathemelloccl3.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +21,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,4 +1,4 @@
-package com.cc221045.mathemelloccl3.ui.theme
+package com.cc221045.mathemelloccl3.screens
 
 
 
@@ -13,6 +13,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.screens
+import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)

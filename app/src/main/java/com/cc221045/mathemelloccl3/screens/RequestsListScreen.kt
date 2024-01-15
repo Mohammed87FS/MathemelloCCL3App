@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
 import com.cc221045.mathemelloccl3.data.Request
-import com.cc221045.mathemelloccl3.ui.theme.MainViewModel
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 
 

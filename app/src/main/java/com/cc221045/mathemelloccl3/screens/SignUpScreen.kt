@@ -1,4 +1,4 @@
-
+package com.cc221045.mathemelloccl3.screens
 // Most imports will be the same as for the LoginScreen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,11 +24,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
-import com.cc221045.mathemelloccl3.ui.theme.MainViewModel
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
-fun SignUpScreen(viewModel: MainViewModel, navController: NavController) {
+fun SignUpScreen(viewModel: MainViewModel, navController: NavController,auth: FirebaseAuth) {
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
@@ -67,8 +68,11 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController) {
                 isLoading = true
                 viewModel.registerUser(email, password) { success ->
                     isLoading = false
+
+
                     if (success) {
 
+                        auth.signOut()
                         navController.navigate(Screen.Login.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
@@ -92,7 +96,7 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
-            Text("Already have an account? Log in")
+            Text("Already have an account? Login")
         }
     }
 }

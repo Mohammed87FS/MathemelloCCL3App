@@ -1,11 +1,9 @@
 package com.cc221045.mathemelloccl3
 
 
-import CreateRequestScreen
 import LoginScreen
 import RequestsListScreen
 import SettingsScreen
-import SignUpScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,7 +14,7 @@ import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
@@ -31,24 +29,33 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.room.Room
 import com.cc221045.mathemelloccl3.data.AppDatabase
-import com.cc221045.mathemelloccl3.ui.theme.*
+import com.cc221045.mathemelloccl3.screens.BottomNavigationBar
+import com.cc221045.mathemelloccl3.screens.CreatePostScreen
+import com.cc221045.mathemelloccl3.screens.CreateRequestScreen
+import com.cc221045.mathemelloccl3.screens.EditPostScreen
+import com.cc221045.mathemelloccl3.screens.LikedPostsScreen
+import com.cc221045.mathemelloccl3.screens.PostsListScreen
+import com.cc221045.mathemelloccl3.screens.SignUpScreen
+import com.cc221045.mathemelloccl3.ui.theme.KotloTheme
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    object CreatePost : Screen("createPost", "", Icons.Filled.Add)
-    object PostsList : Screen("postsList", "", Icons.AutoMirrored.Filled.List)
-    object LikedPosts : Screen("likedPosts", "", Icons.Filled.Favorite)
-    object Login : Screen("login", "", Icons.AutoMirrored.Filled.ExitToApp)
-    object Settings : Screen("settings", "", Icons.Filled.Settings)
-    object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
-    object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
-    object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
+    data object CreatePost : Screen("createPost", "", Icons.Filled.Add)
+    data object PostsList : Screen("postsList", "", Icons.AutoMirrored.Filled.List)
+    data object LikedPosts : Screen("likedPosts", "", Icons.Filled.Favorite)
+    data object Login : Screen("login", "", Icons.AutoMirrored.Filled.ExitToApp)
+    data object Settings : Screen("settings", "", Icons.Filled.Person)
+    data object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
+    data object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
+    data object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
 
 }
 
 
 
-val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp) // Include LikedPosts
+val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
 
 
 class MainActivity : ComponentActivity() {
@@ -99,7 +106,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Screen.SignUp.route) {
-                            SignUpScreen(viewModel, navController)
+                            SignUpScreen(viewModel, navController,auth)
                         }
 
                         composable(Screen.CreatePost.route) {
@@ -146,34 +153,5 @@ class MainActivity : ComponentActivity() {
             else -> Screen.Login.route
         }
     }
-
-
-    override fun onStart() {
-        super.onStart()
-        auth.addAuthStateListener(authStateListener)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        auth.removeAuthStateListener(authStateListener)
-    }
-
-    private val authStateListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
-        val user = firebaseAuth.currentUser
-
-        runOnUiThread {
-            if (user != null) {
-                navController?.navigate(Screen.CreatePost.route) {
-                    popUpTo(Screen.Login.route) { inclusive = true }
-                }
-            } else {
-                navController?.navigate(Screen.Login.route) {
-                    popUpTo(Screen.CreatePost.route) { inclusive = true }
-                }
-            }
-        }
-    }
-
-
 
 }

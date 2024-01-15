@@ -1,4 +1,4 @@
-package com.cc221045.mathemelloccl3.ui.theme
+package com.cc221045.mathemelloccl3.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -101,9 +101,12 @@ class MainViewModel(private val postDao: PostDao,
 
     fun registerUser(email: String, password: String, onResult: (Boolean) -> Unit) {
         auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            onResult(task.isSuccessful)
+            if (task.isSuccessful) {
+
+
+                onResult(true)
         }
-    }
+    }}
 
     init {
         viewModelScope.launch {

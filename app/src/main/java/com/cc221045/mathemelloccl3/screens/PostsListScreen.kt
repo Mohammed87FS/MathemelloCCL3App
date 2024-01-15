@@ -1,4 +1,4 @@
-package com.cc221045.mathemelloccl3.ui.theme
+package com.cc221045.mathemelloccl3.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.cc221045.mathemelloccl3.data.Post
+import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
 fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) {

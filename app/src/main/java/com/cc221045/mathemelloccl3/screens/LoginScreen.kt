@@ -23,7 +23,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
-import com.cc221045.mathemelloccl3.ui.theme.MainViewModel
+import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 
 @Composable
@@ -60,10 +60,10 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
             viewModel.loginUser(email, password) { isSuccess, isAdmin ->
                 if (isSuccess) {
                     if (isAdmin) {
-                        // Navigate to admin-specific screen
+
                         navController.navigate(Screen.CreatePost.route)
                     } else {
-                        // Navigate to regular user screen
+
                         navController.navigate(Screen.PostsList.route)
                     }
                 } else {
@@ -87,7 +87,7 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.height(8.dp))
         TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
-            Text("Don't have an account? Sign up")
+            Text("Don't have an account? Signup")
         }
     }
 }
