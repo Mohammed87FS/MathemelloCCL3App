@@ -36,6 +36,7 @@ import com.cc221045.mathemelloccl3.screens.EditPostScreen
 import com.cc221045.mathemelloccl3.screens.LikedPostsScreen
 import com.cc221045.mathemelloccl3.screens.PostsListScreen
 import com.cc221045.mathemelloccl3.screens.SignUpScreen
+import com.cc221045.mathemelloccl3.screens.SplashScreen
 import com.cc221045.mathemelloccl3.ui.theme.KotloTheme
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModelFactory
@@ -50,12 +51,13 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     data object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
     data object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
     data object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
+    data object Splash : Screen("splashScreen", "", Icons.AutoMirrored.Filled.List)
 
 }
 
 
 
-val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
+val screens = listOf(Screen.CreatePost,Screen.Splash, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
 
 
 class MainActivity : ComponentActivity() {
@@ -86,7 +88,7 @@ class MainActivity : ComponentActivity() {
 
                     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
-                    val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route)
+                    val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route,Screen.Splash.route)
 
 
                     if (auth.currentUser != null || viewModel.isAdmin && currentRoute !in hideBottomBarRoutes) {
@@ -98,6 +100,10 @@ class MainActivity : ComponentActivity() {
                         navController = navController,
                         startDestination = getStartDestination()
                     ) {
+                        composable(Screen.Splash.route) {
+                            SplashScreen(navController)
+                        }
+
                         composable(Screen.Settings.route) {
                             SettingsScreen(viewModel, navController)
                         }
@@ -150,8 +156,10 @@ class MainActivity : ComponentActivity() {
         return when {
             auth.currentUser != null && viewModel.isAdmin -> Screen.CreatePost.route
             auth.currentUser != null -> Screen.PostsList.route
-            else -> Screen.Login.route
+            else -> Screen.Splash.route
         }
     }
+
+
 
 }
