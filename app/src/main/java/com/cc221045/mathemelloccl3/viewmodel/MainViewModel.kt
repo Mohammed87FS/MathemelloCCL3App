@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 
 class MainViewModel(private val postDao: PostDao,
-                    private val auth: FirebaseAuth,
+                     val auth: FirebaseAuth,
                     private val requestDao: RequestDao) : ViewModel()  {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())

@@ -2,10 +2,8 @@ package com.cc221045.mathemelloccl3.screens
 
 
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -16,15 +14,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -34,7 +29,6 @@ import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.screens
 import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -122,7 +116,7 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
                 Screen.CreatePost -> viewModel.isAdmin // Only for admin
                 Screen.LikedPosts -> !viewModel.isAdmin // Only for regular users
                 Screen.CreateRequest -> !viewModel.isAdmin // Only for regular users
-                Screen.Login, Screen.SignUp -> false // Exclude these screens
+                Screen.Login, Screen.SignUp,Screen.Splash -> false // Exclude these screens
                 else -> true // All other screens are displayed for everyone
             }
 
@@ -158,20 +152,4 @@ fun getCurrentRoute(navController: NavHostController): String? {
 
 
 
-@Composable
-fun SplashScreen(onSplashComplete: () -> Unit) {
-    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
-        Box(contentAlignment = Alignment.Center) {
-            Text(
-                text = "Mathemello",
-                style = MaterialTheme.typography.displayMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-    }
 
-    LaunchedEffect(key1 = true) {
-        delay(2000)
-        onSplashComplete()
-    }
-}

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -51,19 +52,20 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
     data object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
     data object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
     data object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
-    data object Splash : Screen("splashScreen", "", Icons.AutoMirrored.Filled.List)
+    data object Splash : Screen("splashScreen", "", Icons.Filled.DateRange)
 
 }
 
 
 
-val screens = listOf(Screen.CreatePost,Screen.Splash, Screen.RequestsList,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
+val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.Splash,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
 
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private var navController: NavController? = null
     private lateinit var viewModel: MainViewModel
+
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,18 +93,20 @@ class MainActivity : ComponentActivity() {
                     val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route,Screen.Splash.route)
 
 
-                    if (auth.currentUser != null || viewModel.isAdmin && currentRoute !in hideBottomBarRoutes) {
+
+                    if (!hideBottomBarRoutes.contains(currentRoute)) {
                         BottomNavigationBar(navController, viewModel)
                     }
                 }) { innerPadding ->
                     NavHost(
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
-                        startDestination = getStartDestination()
+                        startDestination = Screen.Splash.route
                     ) {
-                        composable(Screen.Splash.route) {
-                            SplashScreen(navController)
+                       composable(Screen.Splash.route) {
+                           SplashScreen(navController,viewModel)
                         }
+
 
                         composable(Screen.Settings.route) {
                             SettingsScreen(viewModel, navController)
@@ -152,13 +156,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    private fun getStartDestination(): String {
-        return when {
-            auth.currentUser != null && viewModel.isAdmin -> Screen.CreatePost.route
-            auth.currentUser != null -> Screen.PostsList.route
-            else -> Screen.Splash.route
-        }
-    }
+
 
 
 
