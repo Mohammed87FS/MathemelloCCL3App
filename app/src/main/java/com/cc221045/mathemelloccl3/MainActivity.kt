@@ -3,7 +3,6 @@ package com.cc221045.mathemelloccl3
 
 import LoginScreen
 import RequestsListScreen
-import SettingsScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -36,6 +35,7 @@ import com.cc221045.mathemelloccl3.screens.CreateRequestScreen
 import com.cc221045.mathemelloccl3.screens.EditPostScreen
 import com.cc221045.mathemelloccl3.screens.LikedPostsScreen
 import com.cc221045.mathemelloccl3.screens.PostsListScreen
+import com.cc221045.mathemelloccl3.screens.ProfileScreen
 import com.cc221045.mathemelloccl3.screens.SignUpScreen
 import com.cc221045.mathemelloccl3.screens.SplashScreen
 import com.cc221045.mathemelloccl3.ui.theme.KotloTheme
@@ -44,21 +44,22 @@ import com.cc221045.mathemelloccl3.viewmodel.MainViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    data object CreatePost : Screen("createPost", "", Icons.Filled.Add)
-    data object PostsList : Screen("postsList", "", Icons.AutoMirrored.Filled.List)
-    data object LikedPosts : Screen("likedPosts", "", Icons.Filled.Favorite)
-    data object Login : Screen("login", "", Icons.AutoMirrored.Filled.ExitToApp)
-    data object Settings : Screen("settings", "", Icons.Filled.Person)
-    data object SignUp : Screen("signup", "", Icons.Filled.AccountCircle)
-    data object CreateRequest : Screen("createRequest", "", Icons.Filled.Add)
-    data object RequestsList : Screen("requestsList", "", Icons.AutoMirrored.Filled.List)
-    data object Splash : Screen("splashScreen", "", Icons.Filled.DateRange)
+    data object PostsList : Screen("postsList", "postsList", Icons.AutoMirrored.Filled.List)
+    data object CreatePost : Screen("createPost", "createPost", Icons.Filled.Add)
+
+    data object LikedPosts : Screen("likedPosts", "likedPosts", Icons.Filled.Favorite)
+    data object Login : Screen("login", "login", Icons.AutoMirrored.Filled.ExitToApp)
+    data object ProfileScreen : Screen("profile", "profile", Icons.Filled.Person)
+    data object SignUp : Screen("signup", "signup", Icons.Filled.AccountCircle)
+    data object CreateRequest : Screen("createRequest", "createRequest", Icons.Filled.Add)
+    data object RequestsList : Screen("requestsList", "requestsList", Icons.AutoMirrored.Filled.List)
+    data object Splash : Screen("splashScreen", "splashScreen", Icons.Filled.DateRange)
 
 }
 
 
 
-val screens = listOf(Screen.CreatePost, Screen.RequestsList,Screen.Splash,Screen.CreateRequest,Screen.PostsList, Screen.LikedPosts,Screen.Settings,Screen.Login,Screen.SignUp)
+val screens = listOf( Screen.RequestsList,Screen.Splash,Screen.CreateRequest,Screen.PostsList,Screen.CreatePost, Screen.LikedPosts,Screen.ProfileScreen,Screen.Login,Screen.SignUp)
 
 
 class MainActivity : ComponentActivity() {
@@ -108,8 +109,8 @@ class MainActivity : ComponentActivity() {
                         }
 
 
-                        composable(Screen.Settings.route) {
-                            SettingsScreen(viewModel, navController)
+                        composable(Screen.ProfileScreen.route) {
+                            ProfileScreen(viewModel, navController,viewModel.isAdmin)
                         }
                         composable(Screen.Login.route) {
                             LoginScreen(viewModel, navController)

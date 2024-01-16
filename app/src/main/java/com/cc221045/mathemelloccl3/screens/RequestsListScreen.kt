@@ -68,7 +68,8 @@ fun RequestItem(request: Request) {
             Text(request.title, style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(4.dp))
             Text(request.content, style = MaterialTheme.typography.bodyMedium)
-
+            Spacer(modifier = Modifier.height(4.dp))
+            Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }

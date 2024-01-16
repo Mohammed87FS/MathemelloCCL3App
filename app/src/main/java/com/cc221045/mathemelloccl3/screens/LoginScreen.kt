@@ -57,21 +57,22 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(onClick = {
-            viewModel.loginUser(email, password) { isSuccess, isAdmin ->
-                if (isSuccess) {
-                    if (isAdmin) {
+            if(isFormValid()) {
+                viewModel.loginUser(email, password) { isSuccess, isAdmin ->
+                    if (isSuccess) {
+                        if (isAdmin) {
 
-                        navController.navigate(Screen.CreatePost.route)
+                            navController.navigate(Screen.CreatePost.route)
+                        } else {
+
+                            navController.navigate(Screen.PostsList.route)
+                        }
                     } else {
-
-                        navController.navigate(Screen.PostsList.route)
-                    }
-                } else {
                         error = "Login failed"
                     }
                 }
 
-        }) {
+            } }) {
             if (isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp))
             } else {
@@ -92,22 +93,5 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
     }
 }
 
-@Composable
-fun SettingsScreen(viewModel: MainViewModel, navController: NavController) {
-    // Layout for settings
-    Column(modifier = Modifier.padding(16.dp)) {
-        //... other settings options ...
 
-        Button(onClick = {
-            viewModel.logout()
-            navController.navigate(Screen.Login.route) {
-                popUpTo(Screen.PostsList.route) { inclusive = true }
-            }
-        }) {
-            Text("Logout")
-        }
-
-    }
-
-}
 
