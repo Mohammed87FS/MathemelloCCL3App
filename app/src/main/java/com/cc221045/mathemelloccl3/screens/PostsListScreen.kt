@@ -27,12 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.cc221045.mathemelloccl3.data.LikedPost
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
-fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) {
+fun PostsListScreen(userEmail: String,viewModel: MainViewModel, navController: NavHostController) {
 
     LaunchedEffect(key1 = true) {
         viewModel.reloadPosts()
@@ -58,7 +59,7 @@ fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) 
 
             else { LazyColumn {
             items(posts) { post ->
-                UserPostItem(post, viewModel, navController)
+                UserPostItem(userEmail,post, viewModel, navController)
             }
         }}
         }
@@ -66,7 +67,7 @@ fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) 
 }
 
 @Composable
-fun UserPostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
+fun UserPostItem( userEmail: String,post: Post, viewModel: MainViewModel, navController: NavHostController) {
 
 
 
@@ -101,18 +102,24 @@ fun UserPostItem(post: Post, viewModel: MainViewModel, navController: NavHostCon
                         horizontalArrangement = Arrangement.End,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        if (!viewModel.isAdmin){
-                        IconButton(
-                            onClick = {
-                                if (post.isLiked) viewModel.unlikePost(post)
-                                else viewModel.likePost(post)
+                        if (!viewModel.isAdmin) {
+                            IconButton(
+                                onClick = {
+                                    if (post.isLiked) {
+                                        // Call unlikePost with post ID and user email
+                                        viewModel.unlikePost(post.id, userEmail)
+                                    } else {
+                                        // Call likePost with post data and user email
+                                        viewModel.likePost(post, userEmail)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = if (post.isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                    contentDescription = "Like"
+                                )
                             }
-                        ) {
-                            Icon(
-                                imageVector = if (post.isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = "Like"
-                            )
-                        }}
+                        }
                       }
                 }
             }
@@ -167,7 +174,7 @@ fun AdminPostItem(post: Post, viewModel: MainViewModel, navController: NavHostCo
     }
 }
     @Composable
-    fun SimplePostItem(post: Post) {
+    fun SimplePostItem(likedPost: LikedPost) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
@@ -176,13 +183,13 @@ fun AdminPostItem(post: Post, viewModel: MainViewModel, navController: NavHostCo
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = post.title,
+                    text = likedPost.title,
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = post.content,
+                    text = likedPost.content,
                     style = MaterialTheme.typography.bodyMedium
                 )
 

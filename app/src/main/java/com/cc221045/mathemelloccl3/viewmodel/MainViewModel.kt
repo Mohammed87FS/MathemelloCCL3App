@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.cc221045.mathemelloccl3.data.LikedPost
+import com.cc221045.mathemelloccl3.data.LikedPostDao
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.data.PostDao
 import com.cc221045.mathemelloccl3.data.Request
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val postDao: PostDao,
                      val auth: FirebaseAuth,
-                    private val requestDao: RequestDao) : ViewModel()  {
+                    private val requestDao: RequestDao,
+    private val likedPostDao: LikedPostDao) : ViewModel()  {
 
     private val _posts = MutableStateFlow<List<Post>>(emptyList())
     val posts: StateFlow<List<Post>> = _posts
@@ -143,23 +146,25 @@ class MainViewModel(private val postDao: PostDao,
         }
     }
 
-    fun likePost(post: Post) {
+    fun likePost(post: Post, userEmail: String) {
         viewModelScope.launch {
-            postDao.updatePost(post.copy(isLiked = true))
-            val updatedPosts = postDao.getPosts().first().sortedByDescending { it.timestamp }
-            _posts.value = updatedPosts
+            val likedPost = LikedPost(
+                title = post.title,
+                content = post.content,
+                timestamp = post.timestamp,
+                userEmail = userEmail
+            )
+            likedPostDao.likePost(likedPost)
         }
     }
 
-    fun unlikePost(post: Post) {
+    fun unlikePost(postId: Int, userEmail: String) {
         viewModelScope.launch {
-            postDao.updatePost(post.copy(isLiked = false))
-            val updatedPosts = postDao.getPosts().first().sortedByDescending { it.timestamp }
-            _posts.value = updatedPosts
-        }
+            likedPostDao.unlikePost(postId, userEmail)
+        }}
+    fun getLikedPosts(userEmail: String): LiveData<List<LikedPost>> {
+        return likedPostDao.getLikedPosts(userEmail)
     }
-
-    val likedPosts: LiveData<List<Post>> = postDao.getLikedPosts().asLiveData()
 
 
 

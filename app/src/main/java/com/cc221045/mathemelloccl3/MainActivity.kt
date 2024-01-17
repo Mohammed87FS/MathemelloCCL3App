@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-        val viewModelFactory = MainViewModelFactory(db.postDao(),db.requestDao(), FirebaseAuth.getInstance())
+        val viewModelFactory = MainViewModelFactory(db.postDao(),db.requestDao(), FirebaseAuth.getInstance(),db.likedPostDao())
         viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
 
 
@@ -135,10 +135,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Screen.PostsList.route) {
-                            PostsListScreen(viewModel, navController)
+                            PostsListScreen(userEmail = viewModel.userEmail.toString(),viewModel, navController)
                         }
                         composable(Screen.LikedPosts.route) {
-                            LikedPostsScreen(viewModel, navController)
+                            LikedPostsScreen(viewModel, navController,userEmail = viewModel.userEmail.toString())
                         }
                         composable(
                             "editPost/{postId}",

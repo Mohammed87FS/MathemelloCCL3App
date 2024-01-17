@@ -17,8 +17,8 @@ import androidx.navigation.NavHostController
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
-fun LikedPostsScreen(viewModel: MainViewModel, navController: NavHostController) {
-    val likedPosts by viewModel.likedPosts.observeAsState(listOf())
+fun LikedPostsScreen(viewModel: MainViewModel, navController: NavHostController,userEmail:String) {
+    val likedPosts by viewModel.getLikedPosts(userEmail).observeAsState(listOf())
 
 
 
@@ -37,8 +37,8 @@ fun LikedPostsScreen(viewModel: MainViewModel, navController: NavHostController)
             Text("No posts available", style = MaterialTheme.typography.bodyMedium)
         } else {
             LazyColumn {
-                items(likedPosts) { post ->
-                    SimplePostItem(post)
+                items(likedPosts) { likedPost ->
+                    SimplePostItem(likedPost) // Update this composable to display LikedPost
                 }
             }
         }
