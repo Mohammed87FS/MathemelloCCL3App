@@ -135,10 +135,10 @@ class MainActivity : ComponentActivity() {
                         }
 
                         composable(Screen.PostsList.route) {
-                            PostsListScreen(userEmail = viewModel.userEmail.toString(),viewModel, navController)
+                            PostsListScreen(userEmail = viewModel.userEmail,viewModel, navController)
                         }
                         composable(Screen.LikedPosts.route) {
-                            LikedPostsScreen(viewModel, navController,userEmail = viewModel.userEmail.toString())
+                            LikedPostsScreen(viewModel, navController)
                         }
                         composable(
                             "editPost/{postId}",

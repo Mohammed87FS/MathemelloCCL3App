@@ -5,12 +5,13 @@ package com.cc221045.mathemelloccl3.data
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(tableName = "LikedPost")
 data class LikedPost(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val title: String,
     val content: String,
     val timestamp: Long,
-    val userEmail: String
+    val userEmail: String,
+    val postId : Int
 )
 

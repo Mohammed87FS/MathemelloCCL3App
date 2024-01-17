@@ -1,5 +1,6 @@
 package com.cc221045.mathemelloccl3.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,24 +24,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.cc221045.mathemelloccl3.data.LikedPost
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun PostsListScreen(userEmail: String,viewModel: MainViewModel, navController: NavHostController) {
+fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel, navController: NavHostController) {
 
     LaunchedEffect(key1 = true) {
         viewModel.reloadPosts()
     }
     val posts by viewModel.posts.collectAsState()
 
-
+    val userEmail by viewModel.userEmail.observeAsState()
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -59,7 +63,7 @@ fun PostsListScreen(userEmail: String,viewModel: MainViewModel, navController: N
 
             else { LazyColumn {
             items(posts) { post ->
-                UserPostItem(userEmail,post, viewModel, navController)
+                UserPostItem(userEmail = viewModel.userEmail,post, viewModel, navController)
             }
         }}
         }
@@ -67,9 +71,9 @@ fun PostsListScreen(userEmail: String,viewModel: MainViewModel, navController: N
 }
 
 @Composable
-fun UserPostItem( userEmail: String,post: Post, viewModel: MainViewModel, navController: NavHostController) {
+fun UserPostItem(userEmail: MutableLiveData<String>, post: Post, viewModel: MainViewModel, navController: NavHostController) {
 
-
+    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
     Card(
         modifier = Modifier
@@ -110,7 +114,8 @@ fun UserPostItem( userEmail: String,post: Post, viewModel: MainViewModel, navCon
                                         viewModel.unlikePost(post.id, userEmail)
                                     } else {
                                         // Call likePost with post data and user email
-                                        viewModel.likePost(post, userEmail)
+                                        viewModel.likePost(post,userEmail)
+                                        Log.d("LikedPostsScreen", " posts updated: $post,$userEmail")
                                     }
                                 }
                             ) {

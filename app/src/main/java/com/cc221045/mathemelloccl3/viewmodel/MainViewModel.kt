@@ -1,5 +1,6 @@
 package com.cc221045.mathemelloccl3.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -70,17 +71,7 @@ class MainViewModel(private val postDao: PostDao,
     }
 
 
-    fun addRequest(userEmail: String, title: String, content: String) {
-        viewModelScope.launch {
-            val newRequest = Request(
-                userEmail = userEmail,
-                title = title,
-                content = content,
-                timestamp = System.currentTimeMillis()
-            )
-            requestDao.insertRequest(newRequest)
-        }
-    }
+
 
     fun getUserRequests(userEmail: String?): LiveData<List<Request>> {
         return requestDao.getRequestsByUser(userEmail).asLiveData()
@@ -145,27 +136,54 @@ class MainViewModel(private val postDao: PostDao,
             _posts.value = updatedPosts
         }
     }
-
-    fun likePost(post: Post, userEmail: String) {
+    fun addRequest(userEmail: String, title: String, content: String) {
         viewModelScope.launch {
+            val newRequest = Request(
+                userEmail = userEmail,
+                title = title,
+                content = content,
+                timestamp = System.currentTimeMillis()
+            )
+            requestDao.insertRequest(newRequest)
+        }
+    }
+    fun likePost(post: Post,userEmail :String) {
+
+        viewModelScope.launch {
+
             val likedPost = LikedPost(
                 title = post.title,
                 content = post.content,
                 timestamp = post.timestamp,
-                userEmail = userEmail
+                userEmail = userEmail,
+                postId = post.id
+
             )
             likedPostDao.likePost(likedPost)
+            Log.d("MainViewModel", "Attempting to like post: ${likedPost}")
         }
     }
 
     fun unlikePost(postId: Int, userEmail: String) {
         viewModelScope.launch {
             likedPostDao.unlikePost(postId, userEmail)
+
         }}
-    fun getLikedPosts(userEmail: String): LiveData<List<LikedPost>> {
-        return likedPostDao.getLikedPosts(userEmail)
+    // This function should return LiveData<List<LikedPost>>
+    fun getLikedPostsLiveData(): LiveData<List<LikedPost>> {
+
+        val email = userEmail.value ?: return MutableLiveData()
+
+        return likedPostDao.getLikedPosts(email).asLiveData()
+
+
     }
 
 
 
+
+
+
+
 }
+
