@@ -151,34 +151,38 @@ class MainViewModel(private val postDao: PostDao,
 
         viewModelScope.launch {
 
-            val likedPost = LikedPost(
-                title = post.title,
-                content = post.content,
-                timestamp = post.timestamp,
-                userEmail = userEmail,
-                postId = post.id
-
-            )
-            likedPostDao.likePost(likedPost)
-            Log.d("MainViewModel", "Attempting to like post: ${likedPost}")
-        }
-    }
+            try {
+                val likedPost = LikedPost(
+                    title = post.title,
+                    content = post.content,
+                    timestamp = System.currentTimeMillis(),
+                    userEmail = userEmail,
+                    postId = post.id // Assuming `post` has an `id` field
+                )
+                likedPostDao.likePost(likedPost)
+                Log.d("YourRepository", "Post liked successfully: $likedPost")
+                val rowId = likedPostDao.likePost(likedPost)
+                if (rowId == -1L) {
+                    Log.e("LikedPostDao", "Failed to insert liked post")
+                } else {
+                    Log.d("LikedPostDao", "Inserted liked post with row ID: $rowId")
+                }
+            } catch (e: Exception) {
+                Log.e("YourRepository", "Error liking post", e)
+            }
+    }}
 
     fun unlikePost(postId: Int, userEmail: String) {
         viewModelScope.launch {
             likedPostDao.unlikePost(postId, userEmail)
 
         }}
-    // This function should return LiveData<List<LikedPost>>
-    fun getLikedPostsLiveData(): LiveData<List<LikedPost>> {
-
-        val email = userEmail.value ?: return MutableLiveData()
-
-        return likedPostDao.getLikedPosts(email).asLiveData()
 
 
+
+    fun getLikedPostsLiveData(userEmail: String?): LiveData<List<LikedPost>> {
+        return likedPostDao.getLikedPosts(userEmail).asLiveData()
     }
-
 
 
 

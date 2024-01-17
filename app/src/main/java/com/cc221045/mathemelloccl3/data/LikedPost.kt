@@ -1,7 +1,5 @@
 package com.cc221045.mathemelloccl3.data
 
-// LikedPost.kt
-
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -14,4 +12,3 @@ data class LikedPost(
     val userEmail: String,
     val postId : Int
 )
-

@@ -19,8 +19,8 @@ import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
  fun LikedPostsScreen(viewModel: MainViewModel, navController: NavHostController) {
-
-    val likedPosts by viewModel.getLikedPostsLiveData().observeAsState(listOf())
+    val userEmail by viewModel.userEmail.observeAsState()
+    val likedPosts = viewModel.getLikedPostsLiveData(userEmail ?: "").observeAsState(initial = listOf()).value
 
     LaunchedEffect(likedPosts) {
         Log.d("LikedPostsScreen", "Liked posts updated: $likedPosts")

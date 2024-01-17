@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LikedPostDao {
     @Insert
-    suspend fun likePost(likedPost: LikedPost)
+    suspend fun likePost(likedPost: LikedPost): Long
 
     @Query("DELETE FROM LikedPost WHERE id = :postId AND userEmail = :userEmail")
     suspend fun unlikePost(postId: Int, userEmail: String)
 
 
-    @Query("SELECT * FROM LikedPost WHERE userEmail = :userEmail")
+    @Query("SELECT * FROM LikedPost WHERE userEmail = :userEmail  ORDER BY timestamp DESC")
      fun getLikedPosts(userEmail: String?):Flow<List<LikedPost>>}
 
