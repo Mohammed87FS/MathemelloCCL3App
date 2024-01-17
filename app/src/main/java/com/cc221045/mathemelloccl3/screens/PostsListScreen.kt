@@ -50,18 +50,23 @@ fun PostsListScreen(viewModel: MainViewModel, navController: NavHostController) 
 
         if (posts.isEmpty()) {
             Text("No posts available", style = MaterialTheme.typography.bodyMedium)
-        } else {
-            LazyColumn {
-                items(posts) { post ->
-                    PostItem(post, viewModel, navController)
-                }
+        } else { if (viewModel.isAdmin){ LazyColumn {
+            items(posts) { post ->
+                AdminPostItem(post, viewModel, navController)
             }
+        }}
+
+            else { LazyColumn {
+            items(posts) { post ->
+                UserPostItem(post, viewModel, navController)
+            }
+        }}
         }
     }
 }
 
 @Composable
-fun PostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
+fun UserPostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
 
 
 
@@ -108,16 +113,59 @@ fun PostItem(post: Post, viewModel: MainViewModel, navController: NavHostControl
                                 contentDescription = "Like"
                             )
                         }}
-                        if (viewModel.isAdmin){
-                        AnimatedButton(
-                            text = "Edit",
-                            onClick = { navController.navigate("editPost/${post.id}") })
-                        AnimatedButton(text = "Delete", onClick = { viewModel.deletePost(post) })
-                    }}
+                      }
                 }
             }
         }
 
+
+
+@Composable
+fun AdminPostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
+
+
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        shape = MaterialTheme.shapes.extraSmall
+    ) {
+
+
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = post.title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = post.content,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+
+
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+
+                if (viewModel.isAdmin){
+                    AnimatedButton(
+                        text = "Edit",
+                        onClick = { navController.navigate("editPost/${post.id}") })
+                    AnimatedButton(text = "Delete", onClick = { viewModel.deletePost(post) })
+                }}
+        }
+    }
+}
     @Composable
     fun SimplePostItem(post: Post) {
         Card(
