@@ -73,7 +73,7 @@ fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel,
 fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostController) {
 
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
-
+    val isLiked by viewModel.isPostLiked(post.id, userEmail).observeAsState(initial = false)
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,8 +113,8 @@ fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostCo
                                 }
                             ) {
                                 Icon(
-                                    imageVector = if (post.isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                    contentDescription = "Like"
+                                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                    contentDescription = if (isLiked) "Unlike" else "Like"
                                 )
                             }
                         }

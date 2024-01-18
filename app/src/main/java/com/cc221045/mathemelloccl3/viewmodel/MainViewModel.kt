@@ -7,6 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.cc221045.mathemelloccl3.data.LikedPost
 import com.cc221045.mathemelloccl3.data.LikedPostDao
@@ -189,6 +190,9 @@ class MainViewModel(private val postDao: PostDao,
 
         }}
 
+    fun isPostLiked(postId: Int, userEmail: String): LiveData<Boolean> = liveData {
+        emit(likedPostDao.getLikedPostByPostId(postId, userEmail).firstOrNull() != null)
+    }
 
 
     fun getLikedPostsLiveData(userEmail: String?): LiveData<List<LikedPost>> {
