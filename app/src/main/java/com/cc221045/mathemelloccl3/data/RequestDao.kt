@@ -1,8 +1,11 @@
 
 package com.cc221045.mathemelloccl3.data
 
-import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 
 
 
@@ -20,8 +23,8 @@ interface RequestDao {
     suspend fun deleteRequest(request: Request)
 
     @Query("SELECT * FROM requests WHERE userEmail = :userEmail ORDER BY timestamp DESC")
-    fun getRequestsByUser(userEmail: String?): Flow<List<Request>>
+    suspend fun getRequestsByUser(userEmail: String): List<Request>
 
     @Query("SELECT * FROM requests ORDER BY timestamp DESC")
-    fun getAllRequests(): Flow<List<Request>>
+    suspend fun getAllRequests(): List<Request>
 }

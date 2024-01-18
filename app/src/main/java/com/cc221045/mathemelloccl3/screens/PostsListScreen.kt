@@ -23,11 +23,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.cc221045.mathemelloccl3.data.LikedPost
 import com.cc221045.mathemelloccl3.data.Post
@@ -36,14 +37,18 @@ import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel, navController: NavHostController) {
+fun PostsListScreen(
+    userEmail: String,
+    viewModel: MainViewModel,
+    navController: NavHostController
+) {
 
     LaunchedEffect(key1 = true) {
         viewModel.reloadPosts()
     }
     val posts by viewModel.posts.collectAsState()
 
-    val userEmail by viewModel.userEmail.observeAsState()
+    val userEmail = viewModel.userEmail
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -54,26 +59,33 @@ fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel,
 
         if (posts.isEmpty()) {
             Text("No posts available", style = MaterialTheme.typography.bodyMedium)
-        } else { if (viewModel.isAdmin){ LazyColumn {
-            items(posts) { post ->
-                AdminPostItem(post, viewModel, navController)
+        } else {
+            if (viewModel.isAdmin) {
+                LazyColumn {
+                    items(posts) { post ->
+                        AdminPostItem(post, viewModel, navController)
+                    }
+                }
+            } else {
+                LazyColumn {
+                    items(posts) { post ->
+                        UserPostItem(post, viewModel, navController)
+                    }
+                }
             }
-        }}
-
-            else { LazyColumn {
-            items(posts) { post ->
-                UserPostItem(post, viewModel, navController)
-            }
-        }}
         }
     }
 }
 
 @Composable
-fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostController) {
-
+fun UserPostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
-    val isLiked by viewModel.isPostLiked(post.id, userEmail).observeAsState(initial = false)
+    var isLiked by remember { mutableStateOf(false) }
+
+    LaunchedEffect(post.id, userEmail) {
+       isLiked = viewModel.isPostLiked(post.id, userEmail)
+    }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,36 +110,33 @@ fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostCo
 
 
 
-                    Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp))
 
 
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        if (!viewModel.isAdmin) {
-                            IconButton(
-                                onClick = {
-                                    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
-                                    viewModel.toggleLikePost(post, userEmail)
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                    contentDescription = if (isLiked) "Unlike" else "Like"
-                                )
-                            }
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (!viewModel.isAdmin) {
+                    IconButton(
+                        onClick = {
+                            viewModel.toggleLikePost(post, userEmail)
                         }
-                      }
+                    ) {
+                        Icon(
+                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = if (isLiked) "Unlike" else "Like"
+                        )
+                    }
                 }
             }
         }
-
+    }
+}
 
 
 @Composable
 fun AdminPostItem(post: Post, viewModel: MainViewModel, navController: NavHostController) {
-
 
 
     Card(
@@ -162,35 +171,37 @@ fun AdminPostItem(post: Post, viewModel: MainViewModel, navController: NavHostCo
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-                if (viewModel.isAdmin){
+                if (viewModel.isAdmin) {
                     AnimatedButton(
                         text = "Edit",
                         onClick = { navController.navigate("editPost/${post.id}") })
                     AnimatedButton(text = "Delete", onClick = { viewModel.deletePost(post) })
-                }}
-        }
-    }
-}
-    @Composable
-    fun SimplePostItem(likedPost: LikedPost) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(
-                    text = likedPost.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = likedPost.content,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
+                }
             }
         }
     }
+}
+
+@Composable
+fun SimplePostItem(likedPost: LikedPost) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = likedPost.title,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = likedPost.content,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+        }
+    }
+}

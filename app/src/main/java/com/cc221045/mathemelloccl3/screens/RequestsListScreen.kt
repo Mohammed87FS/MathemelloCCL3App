@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,28 +12,31 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.MutableLiveData
 import com.cc221045.mathemelloccl3.data.Request
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 
-
 @Composable
-fun RequestsListScreen(viewModel: MainViewModel, userEmail: MutableLiveData<String>, isAdmin: Boolean) {
-    val userEmail by viewModel.userEmail.observeAsState()
-    val requests = if (isAdmin) {
-        viewModel.getAllRequests().observeAsState(initial = listOf()).value
+fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boolean) {
+    val userEmail = viewModel.userEmail
+    var requests by remember { mutableStateOf(listOf<Request>()) }
+
+    LaunchedEffect(userEmail, isAdmin) {
+        requests = if (isAdmin) {
+            viewModel.getAllRequests()
+        } else {
+            viewModel.getUserRequests(userEmail)
+        }
     }
 
-
-    else {
-        viewModel.getUserRequests(userEmail).observeAsState(initial = listOf()).value
-    }
 
     if (requests.isEmpty()) {
         Column(
@@ -53,7 +55,6 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: MutableLiveData<Stri
         }
     }
 }
-
 
 
 @Composable
