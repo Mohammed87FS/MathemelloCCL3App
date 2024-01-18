@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 
@@ -144,6 +145,25 @@ class MainViewModel(private val postDao: PostDao,
                 timestamp = System.currentTimeMillis()
             )
             requestDao.insertRequest(newRequest)
+        }
+    }
+    fun toggleLikePost(post: Post, userEmail: String) {
+        viewModelScope.launch {
+            val existingLikedPost = likedPostDao.getLikedPostByPostId(post.id, userEmail).firstOrNull()
+            if (existingLikedPost != null) {
+                // Post is already liked, so unlike it
+                likedPostDao.unlikePost(post.id, userEmail)
+            } else {
+                // Post is not liked, so like it
+                val newLikedPost = LikedPost(
+                    title = post.title,
+                    content = post.content,
+                    timestamp = System.currentTimeMillis(),
+                    userEmail = userEmail,
+                    postId = post.id
+                )
+                likedPostDao.likePost(newLikedPost)
+            }
         }
     }
     fun likePost(post: Post,userEmail :String) {

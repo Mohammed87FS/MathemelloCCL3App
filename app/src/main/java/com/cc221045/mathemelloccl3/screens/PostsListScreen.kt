@@ -1,6 +1,5 @@
 package com.cc221045.mathemelloccl3.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -109,14 +108,8 @@ fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostCo
                         if (!viewModel.isAdmin) {
                             IconButton(
                                 onClick = {
-                                    if (post.isLiked) {
-                                        // Call unlikePost with post ID and user email
-                                        viewModel.unlikePost(post.id, userEmail)
-                                    } else {
-                                        // Call likePost with post data and user email
-                                        viewModel.likePost(post,userEmail)
-                                        Log.d("LikedPostsScreen", " posts updated: $post,$userEmail")
-                                    }
+                                    val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+                                    viewModel.toggleLikePost(post, userEmail)
                                 }
                             ) {
                                 Icon(
