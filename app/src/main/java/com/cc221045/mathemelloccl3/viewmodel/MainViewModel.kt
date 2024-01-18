@@ -1,6 +1,5 @@
 package com.cc221045.mathemelloccl3.viewmodel
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -151,7 +150,7 @@ class MainViewModel(private val postDao: PostDao,
 
         viewModelScope.launch {
 
-            try {
+
                 val likedPost = LikedPost(
                     title = post.title,
                     content = post.content,
@@ -160,18 +159,10 @@ class MainViewModel(private val postDao: PostDao,
                     postId = post.id // Assuming `post` has an `id` field
                 )
                 likedPostDao.likePost(likedPost)
-                Log.d("YourRepository", "Post liked successfully: $likedPost")
-                val rowId = likedPostDao.likePost(likedPost)
-                if (rowId == -1L) {
-                    Log.e("LikedPostDao", "Failed to insert liked post")
-                } else {
-                    Log.d("LikedPostDao", "Inserted liked post with row ID: $rowId")
-                }
-            } catch (e: Exception) {
-                Log.e("YourRepository", "Error liking post", e)
-            }
-    }}
 
+
+        }
+    }
     fun unlikePost(postId: Int, userEmail: String) {
         viewModelScope.launch {
             likedPostDao.unlikePost(postId, userEmail)

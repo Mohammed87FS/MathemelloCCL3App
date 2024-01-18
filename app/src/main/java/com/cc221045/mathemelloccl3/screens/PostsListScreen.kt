@@ -63,7 +63,7 @@ fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel,
 
             else { LazyColumn {
             items(posts) { post ->
-                UserPostItem(userEmail = viewModel.userEmail,post, viewModel, navController)
+                UserPostItem(post, viewModel, navController)
             }
         }}
         }
@@ -71,7 +71,7 @@ fun PostsListScreen(userEmail:MutableLiveData<String> ,viewModel: MainViewModel,
 }
 
 @Composable
-fun UserPostItem(userEmail: MutableLiveData<String>, post: Post, viewModel: MainViewModel, navController: NavHostController) {
+fun UserPostItem( post: Post, viewModel: MainViewModel, navController: NavHostController) {
 
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
