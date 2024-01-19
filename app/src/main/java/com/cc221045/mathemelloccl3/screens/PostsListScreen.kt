@@ -89,6 +89,7 @@ fun AdminPostItem(
     viewModel: MainViewModel,
     navController: NavHostController,
 ) {
+    val imagePainter = rememberAsyncImagePainter(model = post.imageUrl)
     Card(
         modifier =
         Modifier
@@ -109,7 +110,34 @@ fun AdminPostItem(
                 style = MaterialTheme.typography.bodyMedium,
             )
 
+
             Spacer(modifier = Modifier.width(16.dp))
+// Image
+            post.imageUrl?.let { imageUrl ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    shape = RoundedCornerShape(8.dp), // Define the shape of the card
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Image(
+                        painter = imagePainter,
+                        contentDescription = "Selected Image",
+                        modifier = Modifier
+                            .height(150.dp) // Set a fixed height
+                            .fillMaxWidth() // Ensure it fills the width of the card
+                            .clip(RoundedCornerShape(8.dp)) // Clip the image to fit the card shape
+                            .aspectRatio(1f), // Maintain aspect ratio
+                        contentScale = ContentScale.Crop // Crop the image to fit the dimensions
+                    )
+
+                    if (imagePainter.state is AsyncImagePainter.State.Error) {
+                        val errorState = imagePainter.state as AsyncImagePainter.State.Error
+                        val throwable = errorState.result.throwable
+                        Log.e("PostItem", "Error loading image: ${throwable.message}")
+                    }
+                    Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
 
             Row(
                 horizontalArrangement = Arrangement.End,
@@ -125,7 +153,7 @@ fun AdminPostItem(
             }
         }
     }
-}
+}}}
 
 
 @Composable
