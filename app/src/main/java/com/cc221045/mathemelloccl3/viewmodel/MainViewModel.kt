@@ -141,7 +141,7 @@ class MainViewModel(
     fun addRequest(
         userEmail: String,
         title: String,
-        content: String,
+        content: String,imageUrl:String
     ) {
         viewModelScope.launch {
             val newRequest =
@@ -150,6 +150,7 @@ class MainViewModel(
                     title = title,
                     content = content,
                     timestamp = System.currentTimeMillis(),
+                    imageUrl=imageUrl
                 )
             requestDao.insertRequest(newRequest)
         }
