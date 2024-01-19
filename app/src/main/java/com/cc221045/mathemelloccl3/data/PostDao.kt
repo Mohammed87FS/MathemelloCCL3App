@@ -1,19 +1,19 @@
 package com.cc221045.mathemelloccl3.data
 
-import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 
 @Dao
 interface PostDao {
-
     @Query("SELECT * FROM posts")
-    fun getPosts(): Flow<List<Post>>
+    suspend fun getPosts(): List<Post>
 
     @Query("SELECT * FROM posts WHERE id = :postId")
-    fun getPostById(postId: String): Flow<Post>
+    suspend fun getPostById(postId: String): Post?
 
-    @Query("SELECT * FROM posts WHERE isLiked = 1")
-    fun getLikedPosts(): Flow<List<Post>>
 
     @Insert
     suspend fun insertPost(post: Post)
