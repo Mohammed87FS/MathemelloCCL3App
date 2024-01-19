@@ -41,9 +41,10 @@ class MainViewModel(
         onResult: (Boolean, Boolean) -> Unit,
     ) {
         if (email == adminEmail && password == adminPassword) {
-            // Admin credentials
-            isAdmin = true
-            onResult(true, true)
+            auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    isAdmin = true
+                    onResult(true, true)}}
         } else {
             // Regular user login
             auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
