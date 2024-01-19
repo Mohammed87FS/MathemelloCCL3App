@@ -9,7 +9,8 @@ data class Post(
     var title: String,
     var content: String,
     var isLiked: Boolean = false,
-    val timestamp: Long
+    val timestamp: Long,
+    val imageUrl: String,
 
 )
 

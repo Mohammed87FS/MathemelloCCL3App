@@ -1,43 +1,45 @@
 package com.cc221045.mathemelloccl3.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.isSystemInDarkTheme
 
-import androidx.compose.material3.*
+import android.app.Activity
+import android.net.Uri
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.Typography
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
-
-
-import androidx.compose.material3.Button
-
-import androidx.compose.material3.Text
-
-
-import androidx.compose.material3.ButtonDefaults
-
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.shape.RoundedCornerShape
-
-import androidx.compose.runtime.*
-
-import androidx.compose.ui.unit.dp
-
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 
 
 
@@ -99,6 +101,52 @@ fun KotloTheme(
 }
 
 
+
+@Composable
+fun ImagePickerButton(text: String,onImagePicked: (Uri?) -> Unit) {
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        onImagePicked(uri)
+    }
+
+
+    var isPressed by remember { mutableStateOf(false) }
+
+    val elevation by animateDpAsState(
+        targetValue = if (isPressed) 4.dp else 8.dp,
+        animationSpec = tween(durationMillis = 200)
+    )
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.95f else 1f,
+        animationSpec = tween(durationMillis = 100)
+    )
+
+    val backgroundColor by animateColorAsState(
+        targetValue = if (isSystemInDarkTheme()) Color(0xFF455A64) else Color(0xFF78909C),
+        animationSpec = tween(durationMillis = 300)
+    )
+
+    Button(
+        onClick = { launcher.launch("image/*") },
+        modifier = Modifier.graphicsLayer(scaleX = scale, scaleY = scale),
+        elevation = ButtonDefaults.buttonElevation(defaultElevation = elevation),
+        shape = RoundedCornerShape(50),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = backgroundColor
+        )
+    ) {
+        Text(
+            text = text,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Medium,
+            color = Color.White
+        )
+    }
+
+    DisposableEffect(isPressed) {
+        onDispose { isPressed = false }
+    }
+}
 
 
 

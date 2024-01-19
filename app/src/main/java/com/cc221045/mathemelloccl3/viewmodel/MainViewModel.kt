@@ -1,9 +1,11 @@
 package com.cc221045.mathemelloccl3.viewmodel
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cc221045.mathemelloccl3.data.LikedPost
@@ -99,13 +101,25 @@ class MainViewModel(
 
     fun addPost(
         title: String,
-        content: String,
+        content: String, imageUrl:String
     ) {
         viewModelScope.launch {
             val timestamp = System.currentTimeMillis()
-            val newPost = Post(title = title, content = content, timestamp = timestamp)
+            val newPost = Post(title = title, content = content, timestamp = timestamp,imageUrl=imageUrl)
             postDao.insertPost(newPost)
         }
+    }
+
+    private val _selectedImageUri = MutableLiveData<Uri?>()
+    val selectedImageUri: MutableLiveData<Uri?> = _selectedImageUri
+
+    fun setImageUri(uri: Uri) {
+        _selectedImageUri.value = uri
+        // Handle image uploading here if needed
+    }
+
+    fun clearImageUri() {
+        _selectedImageUri.value = null
     }
 
     fun updatePost(post: Post) {
