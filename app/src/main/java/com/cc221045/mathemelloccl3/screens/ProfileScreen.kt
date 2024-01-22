@@ -12,8 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
-
-
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
@@ -30,6 +29,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
         }) {
             Text("Logout")
         }
+        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com" ){
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
 
@@ -38,8 +38,19 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             }
         }) {
             Text("Requests")
-        }
-        if (!isAdmin){
+        }}
+
+        if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com" ){
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(onClick = {
+
+                navController.navigate(Screen.PostsList.route) {
+                    popUpTo(Screen.RequestsList.route) { inclusive = true }
+                }
+            }) {
+                Text("Posts")
+            }}
+        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com" ){
         Spacer(modifier = Modifier.height(8.dp))
         Button(onClick = {
 

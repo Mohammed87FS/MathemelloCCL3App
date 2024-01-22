@@ -11,10 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.screens
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
-
-
-
-
+import com.google.firebase.auth.FirebaseAuth
 
 
 @Composable
@@ -25,11 +22,12 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
        screens.forEach { screen ->
 
             val shouldDisplay = when (screen) {
-                Screen.CreatePost -> viewModel.isAdmin // Only for admin
+                Screen.CreatePost -> FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com"  // Only for admin
                 Screen.LikedPosts -> false // Only for regular users
 
-                Screen.RequestsList -> viewModel.isAdmin // Only for regular users
-                Screen.CreateRequest -> !viewModel.isAdmin // Only for regular users
+                Screen.RequestsList -> FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com"
+                Screen.PostsList -> FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"
+                Screen.CreateRequest -> FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"  // Only for regular users
                 Screen.Login, Screen.SignUp,Screen.Splash -> false // Exclude these screens
                 else -> true // All other screens are displayed for everyone
             }

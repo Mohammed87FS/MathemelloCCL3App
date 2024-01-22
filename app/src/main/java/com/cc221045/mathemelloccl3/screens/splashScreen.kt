@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 
@@ -27,7 +28,8 @@ fun SplashScreen(navController: NavController, viewModel: MainViewModel) {
         delay(2000) // Display splash screen for 2 seconds
 
         val nextRoute = when {
-            viewModel.auth.currentUser != null && viewModel.isAdmin -> Screen.CreatePost.route
+
+            viewModel.auth.currentUser != null && FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com" -> Screen.CreatePost.route
             viewModel.auth.currentUser != null -> Screen.PostsList.route
             else -> Screen.Login.route
         }

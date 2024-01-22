@@ -99,7 +99,7 @@ fun PostsListScreen(
             LazyColumn {
                 items(filteredPosts) { post ->
 
-                    if (viewModel.isAdmin) {
+                    if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com" ) {
                         AdminPostItem(post, viewModel, navController)
                     } else {
 
