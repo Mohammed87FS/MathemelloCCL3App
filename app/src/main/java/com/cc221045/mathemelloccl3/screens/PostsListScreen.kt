@@ -208,26 +208,31 @@ fun SimplePostItem(likedPost: LikedPost) {
 }
 
 
-
 @Composable
 fun UserPostItem(
     post: Post,
     viewModel: MainViewModel,
-    navController: NavHostController, // Passed from the parent
+    navController: NavHostController,
     onLikeClicked: () -> Unit
 ) {
+    // This painter will handle the image loading
+    val imagePainter = post.imageUrl?.let { imageUrl ->
+        rememberAsyncImagePainter(model = imageUrl)
+    }
 
-    val imagePainter = rememberAsyncImagePainter(model = post.imageUrl)
+    // Fetch the current user's email
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
+
+    // State to keep track of whether the post is liked
     var isLiked by remember { mutableStateOf(false) }
 
+    // Check if the post is liked whenever post.id or userEmail changes
     LaunchedEffect(post.id, userEmail) {
         isLiked = viewModel.isPostLiked(post.id, userEmail)
     }
 
     Card(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
@@ -245,61 +250,51 @@ fun UserPostItem(
                 style = MaterialTheme.typography.bodyMedium,
             )
 
-            Spacer(modifier = Modifier.width(16.dp))
-// Image
-            post.imageUrl?.let { imageUrl ->
+            // Conditionally display the image if the URL is available
+            imagePainter?.let {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    shape = RoundedCornerShape(8.dp), // Define the shape of the card
+                    shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Image(
-                        painter = imagePainter,
-                        contentDescription = "Selected Image",
+                        painter = it,
+                        contentDescription = "Post Image",
                         modifier = Modifier
-                            .height(150.dp) // Set a fixed height
-                            .fillMaxWidth() // Ensure it fills the width of the card
-                            .clip(RoundedCornerShape(8.dp)) // Clip the image to fit the card shape
-                            .aspectRatio(1f), // Maintain aspect ratio
-                        contentScale = ContentScale.Crop // Crop the image to fit the dimensions
+                            .height(150.dp)
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .aspectRatio(1f),
+                        contentScale = ContentScale.Crop
                     )
-
-                    if (imagePainter.state is AsyncImagePainter.State.Error) {
-                        val errorState = imagePainter.state as AsyncImagePainter.State.Error
-                        val throwable = errorState.result.throwable
-                        Log.e("PostItem", "Error loading image: ${throwable.message}")
-                    }
-                    Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
-
                 }
+            }
 
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    if (!viewModel.isAdmin) {
-                        IconButton(
-                            onClick = {
-                                isLiked = !isLiked
-
-
-                                viewModel.toggleLikePost(post, userEmail)
-
-
-                                onLikeClicked()
-                            },
-                        ) {
-                            Icon(
-                                imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                                contentDescription = if (isLiked) "Unlike" else "Like",
-                            )
-                        }
+            // Like button and functionality
+            Row(
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                if (!viewModel.isAdmin) {
+                    IconButton(
+                        onClick = {
+                            isLiked = !isLiked
+                            viewModel.toggleLikePost(post, userEmail)
+                            onLikeClicked()
+                        },
+                    ) {
+                        Icon(
+                            imageVector = if (isLiked) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = if (isLiked) "Unlike" else "Like",
+                        )
                     }
                 }
             }
         }
-    }}
+    }
+}
+
 
 

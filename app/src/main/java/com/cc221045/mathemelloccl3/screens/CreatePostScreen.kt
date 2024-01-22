@@ -31,6 +31,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -49,6 +50,7 @@ fun CreatePostScreen(
     var content by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf(false) }
     val imageUri by viewModel.selectedImageUri.observeAsState()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -93,22 +95,23 @@ fun CreatePostScreen(
             text = "Pick Image",
             onImagePicked = { uri ->
                 if (uri != null) {
-                    viewModel.setImageUri(uri)
+
+                    viewModel.setImageUri(context, uri)
                 }
             }
         )
+
+
         if (showError) {
             Text("Please fill in both title and content.", color = Color.Red)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-
         AnimatedButton(
             text = "Post",
             onClick = {
                 if (title.isNotBlank() && content.isNotBlank()) {
-
                     val imageUriString = imageUri?.toString() // Convert URI to String safely
                     viewModel.addPost(title, content, imageUriString ?: "") // Use empty string if null
                     viewModel.clearImageUri()
@@ -119,40 +122,29 @@ fun CreatePostScreen(
                 }
             }
         )
+
         imageUri?.let { uri ->
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp),
-                shape = RoundedCornerShape(8.dp), // Define the shape of the card
+                shape = RoundedCornerShape(8.dp),
                 elevation = CardDefaults.cardElevation(4.dp)
             ) {
                 Image(
                     painter = rememberAsyncImagePainter(uri),
                     contentDescription = "Selected Image",
                     modifier = Modifier
-                        .height(150.dp) // Set a fixed height
-                        .fillMaxWidth() // Ensure it fills the width of the card
-                        .clip(RoundedCornerShape(8.dp)) // Clip the image to fit the card shape
-                        .aspectRatio(1f), // Maintain aspect ratio
-                    contentScale = ContentScale.Crop // Crop the image to fit the dimensions
+                        .height(150.dp)
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(8.dp))
+                        .aspectRatio(1f),
+                    contentScale = ContentScale.Crop
                 )
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -29,6 +29,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
@@ -45,6 +46,7 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
     var showError by remember { mutableStateOf(false) }
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
     val imageUri by viewModel.selectedImageUri.observeAsState()
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,7 +84,8 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
             text = "Pick Image",
             onImagePicked = { uri ->
                 if (uri != null) {
-                    viewModel.setImageUri(uri)
+
+                    viewModel.setImageUri(context, uri)
                 }
             }
         )

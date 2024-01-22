@@ -1,5 +1,6 @@
 package com.cc221045.mathemelloccl3.viewmodel
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
@@ -16,6 +17,9 @@ import com.cc221045.mathemelloccl3.data.Request
 import com.cc221045.mathemelloccl3.data.RequestDao
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 class MainViewModel(
     private val postDao: PostDao,
@@ -100,13 +104,15 @@ class MainViewModel(
         }
     }
 
+
     fun addPost(
         title: String,
-        content: String, imageUrl:String
+        content: String,
+        imageUrl: String // This should be the path to the image
     ) {
         viewModelScope.launch {
             val timestamp = System.currentTimeMillis()
-            val newPost = Post(title = title, content = content, timestamp = timestamp,imageUrl=imageUrl)
+            val newPost = Post(title = title, content = content, timestamp = timestamp, imageUrl = imageUrl)
             postDao.insertPost(newPost)
         }
     }
@@ -114,11 +120,29 @@ class MainViewModel(
     private val _selectedImageUri = MutableLiveData<Uri?>()
     val selectedImageUri: MutableLiveData<Uri?> = _selectedImageUri
 
-    fun setImageUri(uri: Uri) {
-        _selectedImageUri.value = uri
-        // Handle image uploading here if needed
+    fun setImageUri(context: Context, uri: Uri) {
+        val newFilePath = copyImageToInternalStorage(context, uri)
+        _selectedImageUri.value = Uri.parse(newFilePath)
     }
 
+    private fun copyImageToInternalStorage(context: Context, uri: Uri): String {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(uri)
+        val directory = File(context.filesDir, "postImages")
+        if (!directory.exists()) directory.mkdirs()
+
+        // Generate a unique filename using timestamp to avoid name conflicts
+        val fileName = "image_${System.currentTimeMillis()}.jpg"
+        val file = File(directory, fileName)
+        val outputStream = FileOutputStream(file)
+
+        inputStream?.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
+
+        return file.absolutePath
+    }
     fun clearImageUri() {
         _selectedImageUri.value = null
     }
