@@ -1,25 +1,14 @@
 package com.cc221045.mathemelloccl3.screens
-// Most imports will be the same as for the LoginScreen
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,78 +16,121 @@ import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
-
 @Composable
-fun SignUpScreen(viewModel: MainViewModel, navController: NavController,auth: FirebaseAuth) {
+fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: FirebaseAuth) {
+    // Custom color definitions based on your design
+    val darkBackground = Color(0xFF121212) // Replace with the exact color from the screenshot
+    val textColor = Color.White
+    val buttonColor = Color(0xFF1EB980) // Replace with the exact button color from the screenshot
+    val errorColor = Color.Red // Or any specific shade of red you want for error messages
+    val textFieldColor = Color.Gray // Replace with the exact text field color from the screenshot
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var confirmPassword by rememberSaveable { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
-    // Email and password validation
     fun isFormValid(): Boolean {
-        if (!email.contains("@")) {
-            error = "Invalid email format"
-            return false
+        error = when {
+            !email.contains("@") -> "Invalid email format"
+            password.length < 6 -> "Password must be at least 6 characters"
+            password != confirmPassword -> "Passwords don't match"
+            else -> null
         }
-        if (password.length < 6) {
-            error = "Password must be at least 6 characters"
-            return false
-        }
-        if (password != confirmPassword) {
-            error = "Passwords don't match"
-            return false
-        }
-        return true
+        return error == null
     }
 
+    MaterialTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(darkBackground), // Apply the background color
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Sign Up",
+                style = MaterialTheme.typography.h4.copy(color = textColor)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Sign Up", style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email", color = textColor) },
+                textStyle = TextStyle(color = textColor),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = textColor,
+                    focusedBorderColor = textFieldColor,
+                    unfocusedBorderColor = textFieldColor
+                )
+            )
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation())
-        OutlinedTextField(value = confirmPassword, onValueChange = { confirmPassword = it }, label = { Text("Confirm Password") }, visualTransformation = PasswordVisualTransformation())
-        Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password", color = textColor) },
+                textStyle = TextStyle(color = textColor),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = textColor,
+                    focusedBorderColor = textFieldColor,
+                    unfocusedBorderColor = textFieldColor
+                )
+            )
 
-        Button(onClick = {
-            if (isFormValid()) {
-                isLoading = true
-                viewModel.registerUser(email, password) { success ->
-                    isLoading = false
+            OutlinedTextField(
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirm Password", color = textColor) },
+                textStyle = TextStyle(color = textColor),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = textColor,
+                    focusedBorderColor = textFieldColor,
+                    unfocusedBorderColor = textFieldColor
+                )
+            )
 
+            Spacer(modifier = Modifier.height(16.dp))
 
-                    if (success) {
-
-                        auth.signOut()
-                        navController.navigate(Screen.Login.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+            Button(
+                onClick = {
+                    if (isFormValid()) {
+                        isLoading = true
+                        viewModel.registerUser(email, password) { success ->
+                            isLoading = false
+                            if (success) {
+                                auth.signOut()
+                                navController.navigate(Screen.Login.route) {
+                                    popUpTo(Screen.Login.route) { inclusive = true }
+                                }
+                            } else {
+                                error = "Registration failed"
+                            }
                         }
-
-                    } else {
-                        error = "Registration failed"
                     }
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor)
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Text(text = "Sign Up", color = textColor)
                 }
             }
-        }) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            } else {
-                Text(text = "Sign Up")
-            }
-        }
 
-        error?.let {
+            error?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it, color = errorColor)
+            }
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = it, color = MaterialTheme.colors.error)
-        }
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
-            Text("Already have an account? Login")
+
+            TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
+                Text("Already have an account? Login", color = textColor)
+            }
         }
     }
 }
-
-

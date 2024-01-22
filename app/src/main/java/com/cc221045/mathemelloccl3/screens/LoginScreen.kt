@@ -1,40 +1,34 @@
+package com.cc221045.mathemelloccl3.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
-
 @Composable
 fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
+    // Define the color palette based on the screenshot provided earlier
+    val backgroundColor = Color(0xFF1A2135) // dark background
+    val onBackgroundColor = Color(0xFF008377) // text color on the dark background
+    val buttonBackgroundColor = Color(0xFF1E263A)// button color
+    val textFieldBorderColor = Color.Gray // text field border color
+    val errorColor = Color.Red // error message color
+
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
-
     var isLoading by remember { mutableStateOf(false) }
 
-    // Simple email and password validation
     fun isFormValid(): Boolean {
         if (email.isBlank() || !email.contains("@")) {
             error = "Invalid email"
@@ -47,51 +41,83 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
         return true
     }
 
+    MaterialTheme {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .background(backgroundColor), // Set the background color
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Login",
+                style = MaterialTheme.typography.h4.copy(color = onBackgroundColor)
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Login", style = MaterialTheme.typography.h4)
-        Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email", color = onBackgroundColor) },
+                textStyle = TextStyle(color = onBackgroundColor),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = onBackgroundColor,
+                    focusedBorderColor = textFieldBorderColor,
+                    unfocusedBorderColor = textFieldBorderColor
+                )
+            )
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password", color = onBackgroundColor) },
+                textStyle = TextStyle(color = onBackgroundColor),
+                visualTransformation = PasswordVisualTransformation(),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    textColor = onBackgroundColor,
+                    focusedBorderColor = textFieldBorderColor,
+                    unfocusedBorderColor = textFieldBorderColor,
 
-        OutlinedTextField(value = email, onValueChange = { email = it }, label = { Text("Email") })
-        OutlinedTextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation())
-        Spacer(modifier = Modifier.height(16.dp))
+                )
+            )
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = {
-            if(isFormValid()) {
-                viewModel.loginUser(email, password) { isSuccess, isAdmin ->
-                    if (isSuccess) {
-                        if (isAdmin) {
-
-                            navController.navigate(Screen.CreatePost.route)
-                        } else {
-
-                            navController.navigate(Screen.PostsList.route)
+            Button(
+                onClick = {
+                    if(isFormValid()) {
+                        isLoading = true
+                        viewModel.loginUser(email, password) { isSuccess, isAdmin ->
+                            isLoading = false
+                            if (isSuccess) {
+                                if (isAdmin) {
+                                    navController.navigate(Screen.CreatePost.route)
+                                } else {
+                                    navController.navigate(Screen.PostsList.route)
+                                }
+                            } else {
+                                error = "Login failed"
+                            }
                         }
-                    } else {
-                        error = "Login failed"
                     }
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonBackgroundColor)
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                } else {
+                    Text(text = "Login", color = onBackgroundColor)
                 }
-
-            } }) {
-            if (isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp))
-            } else {
-                Text(text = "Login")
             }
-        }
 
+            error?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it, color = errorColor)
+            }
 
-        error?.let {
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = it, color = MaterialTheme.colors.error)
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
-        TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
-            Text("Don't have an account? Signup")
+            TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
+                Text("Don't have an account? Signup", color = onBackgroundColor)
+            }
         }
     }
 }
-
-
-

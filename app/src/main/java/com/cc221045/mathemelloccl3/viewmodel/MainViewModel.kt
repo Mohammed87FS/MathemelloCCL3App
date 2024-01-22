@@ -63,6 +63,7 @@ class MainViewModel(
     fun logout() {
         auth.signOut()
         isAdmin = false
+
     }
 
     suspend fun getUserRequests(userEmail: String): List<Request> {

@@ -19,10 +19,13 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -43,6 +46,7 @@ import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PostsListScreen(
     userEmail: String,
@@ -50,10 +54,14 @@ fun PostsListScreen(
     navController: NavHostController,
 ) {
 
-    LaunchedEffect(Unit) {
+
+
+
+        LaunchedEffect(Unit) {
         viewModel.reloadPosts()
     }
     val posts = viewModel.posts
+    var searchQuery by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text(
@@ -62,26 +70,45 @@ fun PostsListScreen(
             modifier = Modifier.padding(bottom = 16.dp),
         )
 
-        if (posts.isEmpty()) {
+        // Search Bar
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text("Search posts") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+
+        )
+
+        val filteredPosts = posts.filter {
+            searchQuery.isEmpty() || it.title.contains(searchQuery, ignoreCase = true) || it.content.contains(searchQuery, ignoreCase = true)
+        }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Posts",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 16.dp),
+        )
+
+        if (filteredPosts.isEmpty()) {
             Text("No posts available", style = MaterialTheme.typography.bodyMedium)
         } else {
-            if (viewModel.isAdmin) {
-                LazyColumn {
-                    items(posts) { post ->
+
+            LazyColumn {
+                items(filteredPosts) { post ->
+
+                    if (viewModel.isAdmin) {
                         AdminPostItem(post, viewModel, navController)
-                    }
-                }
-            } else {
-                LazyColumn {
-                    items(posts) { post ->
-                        UserPostItem(post, viewModel, navController)
+                    } else {
+
+                        UserPostItem(post, viewModel, navController,
+                            onLikeClicked = { viewModel.reloadPosts() } )
                     }
                 }
             }
-        }
-    }
-}
-
+        }}}}
 
 @Composable
 fun AdminPostItem(
@@ -186,7 +213,8 @@ fun SimplePostItem(likedPost: LikedPost) {
 fun UserPostItem(
     post: Post,
     viewModel: MainViewModel,
-    navController: NavHostController,
+    navController: NavHostController, // Passed from the parent
+    onLikeClicked: () -> Unit
 ) {
 
     val imagePainter = rememberAsyncImagePainter(model = post.imageUrl)
@@ -254,7 +282,13 @@ fun UserPostItem(
                     if (!viewModel.isAdmin) {
                         IconButton(
                             onClick = {
+                                isLiked = !isLiked
+
+
                                 viewModel.toggleLikePost(post, userEmail)
+
+
+                                onLikeClicked()
                             },
                         ) {
                             Icon(

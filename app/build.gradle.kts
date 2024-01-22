@@ -77,8 +77,6 @@ dependencies {
 
     implementation ("androidx.compose.material:material:1.5.4")
     implementation("androidx.navigation:navigation-compose:2.7.6")
-    implementation ("androidx.compose.material3:material3:1.2.0-beta02")
-
 
 
     implementation("androidx.room:room-ktx:2.6.1")

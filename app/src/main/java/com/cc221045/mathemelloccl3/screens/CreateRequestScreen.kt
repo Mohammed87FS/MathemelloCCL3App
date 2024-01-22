@@ -1,10 +1,12 @@
 package com.cc221045.mathemelloccl3.screens
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -23,8 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.cc221045.mathemelloccl3.ui.theme.ImagePickerButton
@@ -57,15 +62,19 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
 
         Spacer(modifier = Modifier.height(8.dp))
 
+
         OutlinedTextField(
             value = content,
-            onValueChange = { content = it },
+            onValueChange = {
+                content = it
+                showError = title.isBlank() || it.isBlank()
+            },
             label = { Text("Content") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp)
-        )
+                .heightIn(min = 150.dp)
 
+        )
         Spacer(modifier = Modifier.height(8.dp))
 
 

@@ -14,8 +14,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -33,33 +36,52 @@ import com.cc221045.mathemelloccl3.data.Request
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boolean) {
-    val userEmail = viewModel.userEmail
-    var requests by remember { mutableStateOf(listOf<Request>()) }
+    var searchQuery by remember { mutableStateOf("") }
+    var allRequests by remember { mutableStateOf(listOf<Request>()) }
+    var filteredRequests by remember { mutableStateOf(listOf<Request>()) }
 
     LaunchedEffect(userEmail, isAdmin) {
-        requests = if (isAdmin) {
+        allRequests = if (isAdmin) {
             viewModel.getAllRequests()
         } else {
             viewModel.getUserRequests(userEmail)
         }
+        filteredRequests = allRequests
     }
 
-
-    if (requests.isEmpty()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("No requests available", style = MaterialTheme.typography.bodyLarge)
+    LaunchedEffect(searchQuery) {
+        filteredRequests = if (searchQuery.isEmpty()) {
+            allRequests
+        } else {
+            allRequests.filter {
+                it.title.contains(searchQuery, ignoreCase = true) ||
+                        it.content.contains(searchQuery, ignoreCase = true)
+            }
         }
-    } else {
-        LazyColumn(modifier = Modifier.padding(16.dp)) {
-            items(requests) { request ->
-                RequestItem(request)
-                Spacer(modifier = Modifier.height(8.dp))
+    }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
+            placeholder = { Text("Search requests") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
+
+        )
+
+        if (filteredRequests.isEmpty()) {
+            Text("No requests available", style = MaterialTheme.typography.bodyLarge)
+        } else {
+            LazyColumn {
+                items(filteredRequests) { request ->
+                    RequestItem(request)
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
     }

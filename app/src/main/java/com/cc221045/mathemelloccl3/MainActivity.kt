@@ -1,24 +1,27 @@
 package com.cc221045.mathemelloccl3
 
 
-import LoginScreen
+import com.cc221045.mathemelloccl3.screens.LoginScreen
 import RequestsListScreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.automirrored.filled.List
+
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.NavType
@@ -44,15 +47,15 @@ import com.cc221045.mathemelloccl3.viewmodel.MainViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    data object PostsList : Screen("postsList", "postsList", Icons.AutoMirrored.Filled.List)
+    data object PostsList : Screen("postsList", "postsList", Icons.Filled.List)
     data object CreatePost : Screen("createPost", "createPost", Icons.Filled.Add)
 
     data object LikedPosts : Screen("likedPosts", "likedPosts", Icons.Filled.Favorite)
-    data object Login : Screen("login", "login", Icons.AutoMirrored.Filled.ExitToApp)
+    data object Login : Screen("login", "login", Icons.Filled.ExitToApp)
     data object ProfileScreen : Screen("profile", "profile", Icons.Filled.Person)
     data object SignUp : Screen("signup", "signup", Icons.Filled.AccountCircle)
     data object CreateRequest : Screen("createRequest", "createRequest", Icons.Filled.Add)
-    data object RequestsList : Screen("requestsList", "requestsList", Icons.AutoMirrored.Filled.List)
+    data object RequestsList : Screen("requestsList", "requestsList", Icons.Filled.List)
     data object Splash : Screen("splashScreen", "splashScreen", Icons.Filled.DateRange)
 
 }
@@ -92,7 +95,6 @@ class MainActivity : ComponentActivity() {
                     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
                     val hideBottomBarRoutes = listOf(Screen.Login.route, Screen.SignUp.route,Screen.Splash.route)
-
 
 
                     if (!hideBottomBarRoutes.contains(currentRoute)) {
