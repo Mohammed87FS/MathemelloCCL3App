@@ -62,7 +62,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx")
 
 
-    implementation ("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.6.0")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -91,4 +91,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }

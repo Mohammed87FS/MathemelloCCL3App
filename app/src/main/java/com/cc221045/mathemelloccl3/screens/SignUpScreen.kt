@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -45,19 +43,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: FirebaseAuth) {
     // Custom color definitions based on your design
-    val darkBackground = Color(0xFF2D303B) // Replace with the exact color from the screenshot
+    val darkBackground = Color(4279705391) // Replace with the exact color from the screenshot
     val textColor = Color(0xFF60A491)
-    val simpleTextColor = Color(0xFF9D9EA5)
-    val buttonColor = Color(0xFF3C3F4A) // Replace with the exact button color from the screenshot
+    val simpleTextColor = Color(4284375919)
+    val buttonColor = Color(4280626236) // Replace with the exact button color from the screenshot
     val errorColor = Color.Red // Or any specific shade of red you want for error messages
     val textFieldColor = Color.Gray // Replace with the exact text field color from the screenshot
-    val cornerRadius = 20.dp
+    val cornerRadius = 10.dp
+    val cornerRadiusBtn = 15.dp
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -99,20 +99,23 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                     color = textColor,
                     fontSize = 32.sp,
                     style = TextStyle(
-                        fontFamily = FontFamily.Monospace, // or any other font family you want
+                        fontFamily = appFontFamily, // or any other font family you want
                         fontWeight = FontWeight.ExtraBold, // choose the desired weight
                         fontSize = 32.sp // set the font size as needed
                     ),
                     modifier = Modifier.weight(1f) // This pushes the text to the left
                 ) }
-            Spacer(modifier = Modifier.height(1.dp))
+            Spacer(modifier = Modifier.height(5.dp))
 
             OutlinedTextField(
                 modifier = Modifier
+                    .height(60.dp)
                     .fillMaxWidth(),
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email", color = simpleTextColor) },
+                label = { Text("Email", color = simpleTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(color = simpleTextColor),
                 shape = RoundedCornerShape(cornerRadius),
                 leadingIcon = {
@@ -128,10 +131,13 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
 
             OutlinedTextField(
                 modifier = Modifier
+                    .height(60.dp)
                     .fillMaxWidth(),
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password", color = simpleTextColor) },
+                label = { Text("Password", color = simpleTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(color = simpleTextColor),
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(cornerRadius),
@@ -151,10 +157,13 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
 
             OutlinedTextField(
                 modifier = Modifier
+                    .height(60.dp)
                     .fillMaxWidth(),
                 value = confirmPassword,
                 onValueChange = { confirmPassword = it },
-                label = { Text("Confirm Password", color = simpleTextColor) },
+                label = { Text("Confirm Password", color = simpleTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(color = simpleTextColor),
                 visualTransformation = PasswordVisualTransformation(),
                 shape = RoundedCornerShape(cornerRadius),
@@ -172,7 +181,7 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Button(
                 onClick = {
@@ -192,15 +201,15 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                     }
                 },
                 modifier = Modifier
-                    .width(150.dp) // Fills the max width of the parent, you can adjust this value as needed
-                    .height(40.dp),
+                    .fillMaxWidth() // Fills the max width of the parent, you can adjust this value as needed
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-                shape = RoundedCornerShape(cornerRadius)
+                shape = RoundedCornerShape(cornerRadiusBtn)
             ) {
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp))
                 } else {
-                    Text(text = "Sign Up", color = textColor, fontSize = 18.sp)
+                    Text(text = "Sign Up", color = textColor, fontSize = 24.sp)
                 }
             }
 
@@ -209,7 +218,7 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                 Text(text = it, color = errorColor)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
                 Text(
@@ -217,7 +226,8 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                         withStyle(style = SpanStyle(color = Color.Gray, fontSize = 14.sp)) {
                             append("Already have an account? ")
                         }
-                        withStyle(style = SpanStyle(color = textColor, fontSize = 18.sp)) {
+                        withStyle(style = SpanStyle(color = textColor, fontFamily = appFontFamily, // or any other font family you want
+                            fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)) {
                             append("Login")
                         }
                     }

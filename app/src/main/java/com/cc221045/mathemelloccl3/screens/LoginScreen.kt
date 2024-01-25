@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -37,7 +36,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
@@ -45,18 +43,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.cc221045.mathemelloccl3.Screen
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @Composable
 fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
     // Define the color palette based on the screenshot provided earlier
-    val backgroundColor = Color(0xFF172041) // dark background
-    val onBackgroundColor = Color(0xFF2F6FA2) // text color on the dark background
-    val buttonBackgroundColor = Color(0xFF2C3E7E)// button color
-    val simpleTextColor = Color(0xFF9D9EA5)
+    val backgroundColor = Color(4279705391) // dark background
+    val onBackgroundColor = Color(4284523665) // text color on the dark background
+    val buttonBackgroundColor = Color(4280626236)// button color
+    val simpleTextColor = Color(4284375919)
     val textFieldBorderColor = Color.Gray // text field border color
     val errorColor = Color.Red // error message color
-    val cornerRadius = 20.dp // This can be adjusted to your desired corner radius
+    val cornerRadius = 10.dp // This can be adjusted to your desired corner radius
+    val cornerRadiusBtn = 15.dp
+
+
 
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -97,25 +99,26 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                 Text(
                     text = "Login",
                     color = onBackgroundColor,
-                    fontSize = 32.sp,
                     modifier = Modifier.weight(1f), // This pushes the text to the left
                     style = TextStyle(
-                        fontFamily = FontFamily.Monospace, // or any other font family you want
+                        fontFamily = appFontFamily, // or any other font family you want
                         fontWeight = FontWeight.ExtraBold, // choose the desired weight
                         fontSize = 32.sp // set the font size as needed
-                    ),
-                )
+                    ),                )
                 // If there's more content that should be on the right, add it here.
             }
-            Spacer(modifier = Modifier.height(1.dp))
-
+            Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 modifier = Modifier
+                    .height(60.dp)
                     .fillMaxWidth(), // Make sure it fills the available width
 
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email", color = simpleTextColor) },
+                label = { Text("Email",
+                    color = simpleTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(color = simpleTextColor),
                 singleLine = true,
                 shape = RoundedCornerShape(cornerRadius), // Set the shape of the text field
@@ -136,7 +139,10 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = { Text("Password", color = simpleTextColor) },
+                label = { Text("Password",
+                    color = simpleTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium) },
                 textStyle = TextStyle(color = simpleTextColor),
                 visualTransformation = PasswordVisualTransformation(),
                 leadingIcon = {
@@ -154,9 +160,10 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                 ),
                 shape = RoundedCornerShape(cornerRadius), // Set the corner shape to have rounded corners
                 modifier = Modifier
+                    .height(60.dp)
                     .fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Button(
                 onClick = {
@@ -177,11 +184,10 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                     }
                 },
                 modifier = Modifier
-                    .width(150.dp) // Fills the max width of the parent, you can adjust this value as needed
-                    .height(40.dp), // Sets the height of the button, adjust this value as needed
+                    .fillMaxWidth() // Fills the max width of the parent, you can adjust this value as needed
+                    .height(50.dp), // Sets the height of the button, adjust this value as needed
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonBackgroundColor),
-                shape = RoundedCornerShape(cornerRadius),
-                elevation = ButtonDefaults.elevation(defaultElevation = 80.dp, pressedElevation = 6.dp)
+                shape = RoundedCornerShape(cornerRadiusBtn),
 
             ) {
                 if (isLoading) {
@@ -190,25 +196,29 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                     Text(
                         text = "Login",
                         color = onBackgroundColor,
-                        fontSize = 18.sp
+                        fontSize = 24.sp
                     )
                 }
             }
 
             error?.let {
-                Spacer(modifier = Modifier.height(8.dp))
+
                 Text(text = it, color = errorColor)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(15.dp))
 
             TextButton(onClick = { navController.navigate(Screen.SignUp.route) }) {
                 Text(
                     buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray, fontSize = 14.sp)) {
+                        withStyle(style = SpanStyle(color = simpleTextColor,
+                            fontFamily = appFontFamily,
+                            fontWeight = FontWeight.Medium, fontSize = 14.sp)) {
                             append("Don't have an account? ")
                         }
-                        withStyle(style = SpanStyle(color = onBackgroundColor, fontSize = 18.sp)) {
+                        withStyle(style = SpanStyle(color = onBackgroundColor,
+                            fontFamily = appFontFamily,
+                            fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)) {
                             append("Sign Up")
                         }
                     }
