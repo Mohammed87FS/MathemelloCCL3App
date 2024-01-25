@@ -202,10 +202,11 @@ class MainViewModel(
 
             if (isRequestChecked == false) {
                 requestDao.checkRequest(requestId)
+                reloadRequests()
 
            } else {
                 requestDao.unCheckRequest(requestId)
-
+                reloadRequests()
 
            }
         }

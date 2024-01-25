@@ -69,7 +69,7 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
     val cornerRadius = 20.dp
 
     LaunchedEffect(userEmail, isAdmin) {
-        allRequests = if (isAdmin) {
+        allRequests = if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com") {
             viewModel.getAllRequests()
         } else {
             viewModel.getUserRequests(userEmail)
@@ -153,8 +153,6 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
     var isChecked by remember { mutableStateOf(request.isChecked) }
 
 
-
-    // Check if the post is liked whenever post.id or userEmail changes
     LaunchedEffect(request.requestId) {
         isChecked = viewModel.isRequestChecked(request.requestId)
     }
@@ -203,13 +201,13 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
                     Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
 
                 }
-                if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com") {
+
 
 
 
                     IconButton(
                         onClick = {
-                            isChecked = !isChecked
+                            isChecked=!isChecked
                             viewModel.toggleCheckedRequest(request.requestId)
                             onCheckClicked()
                         },
@@ -225,7 +223,7 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
                 Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
             }
         }
-    }}
+    }
 
 @Composable
 fun UserRequestItem(request: Request) {
