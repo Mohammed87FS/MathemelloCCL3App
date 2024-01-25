@@ -27,4 +27,17 @@ interface RequestDao {
 
     @Query("SELECT * FROM requests ORDER BY timestamp DESC")
     suspend fun getAllRequests(): List<Request>
+
+    @Query("UPDATE requests SET isChecked = 1 WHERE requestId = :requestId")
+    suspend fun checkRequest(requestId: Long)
+
+
+    @Query("UPDATE requests SET isChecked = 0 WHERE requestId = :requestId")
+    suspend fun unCheckRequest(requestId: Long)
+
+    @Query("SELECT * FROM requests WHERE requestId = :requestId LIMIT 1")
+    suspend fun getcheckedRequestId(requestId: Long): Request?
+
+
+
 }

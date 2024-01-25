@@ -10,5 +10,7 @@ data class Request(
     val title: String,
     val content: String,
     val timestamp: Long,
-    val imageUrl: String
+    val imageUrl: String,
+    val isChecked: Boolean
+
 )

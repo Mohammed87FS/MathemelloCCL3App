@@ -175,11 +175,35 @@ class MainViewModel(
                     title = title,
                     content = content,
                     timestamp = System.currentTimeMillis(),
-                    imageUrl=imageUrl
+                    imageUrl=imageUrl,
+                    isChecked = false
                 )
             requestDao.insertRequest(newRequest)
         }
     }
+
+
+
+
+
+    fun toggleCheckedRequest(
+       requestId: Long
+    ) {
+        viewModelScope.launch {
+            val existingCheckedRequest =       requestDao.getcheckedRequestId(requestId) != null
+
+            if (existingCheckedRequest != null) {
+
+                requestDao.unCheckRequest(requestId)
+            } else {
+
+
+                requestDao.checkRequest(requestId)
+            }
+        }
+    }
+
+
 
     fun toggleLikePost(
         post: Post,
@@ -205,31 +229,6 @@ class MainViewModel(
         }
     }
 
-    fun likePost(
-        post: Post,
-        userEmail: String,
-    ) {
-        viewModelScope.launch {
-            val likedPost =
-                LikedPost(
-                    title = post.title,
-                    content = post.content,
-                    timestamp = System.currentTimeMillis(),
-                    userEmail = userEmail,
-                    postId = post.id, // Assuming `post` has an `id` field
-                )
-            likedPostDao.likePost(likedPost)
-        }
-    }
-
-    fun unlikePost(
-        postId: Int,
-        userEmail: String,
-    ) {
-        viewModelScope.launch {
-            likedPostDao.unlikePost(postId, userEmail)
-        }
-    }
 
     suspend fun isPostLiked(
         postId: Int,
@@ -237,6 +236,12 @@ class MainViewModel(
     ): Boolean {
         return likedPostDao.getLikedPostByPostId(postId, userEmail) != null
     }
+
+    suspend fun isRequestChecked(requestId:Long):Boolean{
+        return requestDao.getcheckedRequestId(requestId) != null
+
+    }
+
 
     suspend fun getLikedPosts(userEmail: String): List<LikedPost> {
         return likedPostDao.getLikedPosts(userEmail)
