@@ -132,7 +132,8 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     else{
-                        AdminRequestItem(request, viewModel)
+                        AdminRequestItem(request, viewModel,
+                            onCheckClicked = { viewModel.reloadRequests() })
                         Spacer(modifier = Modifier.height(8.dp))
 
                     }
@@ -147,9 +148,9 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
 
 
 @Composable
-fun AdminRequestItem(request: Request, viewModel: MainViewModel) {
+fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked: () -> Unit) {
 
-    var isChecked by remember { mutableStateOf(false) }
+    var isChecked by remember { mutableStateOf(request.isChecked) }
 
 
 
@@ -210,7 +211,7 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel) {
                         onClick = {
                             isChecked = !isChecked
                             viewModel.toggleCheckedRequest(request.requestId)
-
+                            onCheckClicked()
                         },
                     ) {
                         Icon(

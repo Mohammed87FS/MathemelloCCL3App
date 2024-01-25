@@ -28,7 +28,9 @@ class MainViewModel(
     private val likedPostDao: LikedPostDao,
 ) : ViewModel() {
     private var _posts by mutableStateOf<List<Post>>(emptyList())
+    private var _requests by mutableStateOf<List<Request>>(emptyList())
     val posts: List<Post> get() = _posts
+    val requests: List<Request> get() = _requests
 
     private val adminEmail = "admin@admin.com"
     private val adminPassword = "adminadmin"
@@ -81,6 +83,12 @@ class MainViewModel(
     fun reloadPosts() {
         viewModelScope.launch {
             _posts = postDao.getPosts().sortedByDescending { it.timestamp }
+        }
+    }
+
+    fun reloadRequests() {
+        viewModelScope.launch {
+            _requests = requestDao.getAllRequests().sortedByDescending { it.timestamp }
         }
     }
 
@@ -190,16 +198,16 @@ class MainViewModel(
        requestId: Long
     ) {
         viewModelScope.launch {
-            val existingCheckedRequest =       requestDao.getcheckedRequestId(requestId) != null
+            val isRequestChecked =       requestDao.isCheckedRequest(requestId)
 
-            if (existingCheckedRequest != null) {
-
-                requestDao.unCheckRequest(requestId)
-            } else {
-
-
+            if (isRequestChecked == false) {
                 requestDao.checkRequest(requestId)
-            }
+
+           } else {
+                requestDao.unCheckRequest(requestId)
+
+
+           }
         }
     }
 
@@ -238,7 +246,7 @@ class MainViewModel(
     }
 
     suspend fun isRequestChecked(requestId:Long):Boolean{
-        return requestDao.getcheckedRequestId(requestId) != null
+        return requestDao.isCheckedRequest(requestId) != null
 
     }
 
