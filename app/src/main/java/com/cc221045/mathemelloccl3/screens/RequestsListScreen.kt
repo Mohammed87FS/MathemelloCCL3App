@@ -128,7 +128,7 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
             LazyColumn {
                 items(filteredRequests) { request ->
                     if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"){
-                        UserRequestItem(request)
+                        UserRequestItem(request,viewModel)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     else{
@@ -227,8 +227,14 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
     }
 
 @Composable
-fun UserRequestItem(request: Request) {
+fun UserRequestItem(request: Request,viewModel: MainViewModel) {
+    var isChecked by remember { mutableStateOf(false) }
 
+
+    LaunchedEffect(request.requestId) {
+        isChecked = viewModel.isRequestChecked(request.requestId)
+        Log.d("AdminRequestItem", "LaunchedEffect triggered for requestId: ${request.requestId}, isChecked: $isChecked")
+    }
 
     val imagePainter = rememberAsyncImagePainter(model = request.imageUrl)
     Card(
@@ -274,6 +280,11 @@ fun UserRequestItem(request: Request) {
                     Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
 
                 }
+                Icon(
+                    imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
+                    contentDescription = if (isChecked) "Uncheck" else "Check",
+                    tint = if (isChecked) Color(0xFF60A491) else Color.Gray
+                )
 
                 Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
             }
