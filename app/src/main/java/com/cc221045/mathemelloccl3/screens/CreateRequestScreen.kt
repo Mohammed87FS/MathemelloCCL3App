@@ -31,12 +31,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.cc221045.mathemelloccl3.ui.theme.ImagePickerButton
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -45,11 +45,12 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissionComplete: () -> Unit) {
 
-    val onBackgroundColor = Color(0xFF2F6FA2)
+    val onBackgroundColor = Color(4284523665)
     val simpleTextColor = Color(0xFF9D9EA5)
-    val backgroundColor = Color(0xFF172041)
+    val backgroundColor = Color(4279705391)
     val buttonBackgroundColor = Color(0xFF3C3F4A)// button color
-    val cornerRadius = 20.dp
+    val cornerRadius = 10.dp
+    val cornerRadiusBtn = 15.dp
 
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
@@ -74,9 +75,9 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
                 "Create Request",
                 color = onBackgroundColor,
                 style = TextStyle(
-                    fontFamily = FontFamily.Monospace, // or any other font family you want
+                    fontFamily = appFontFamily, // or any other font family you want
                     fontWeight = FontWeight.ExtraBold, // choose the desired weight
-                    fontSize = 32.sp // set the font size as needed
+                    fontSize = 32.sp// set the font size as needed
                 ),
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -85,6 +86,7 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
                 value = title,
                 onValueChange = { title = it },
                 label = { Text("Title", color = simpleTextColor) },
+                textStyle = TextStyle(color = simpleTextColor),
                 shape = RoundedCornerShape(cornerRadius),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -100,16 +102,18 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
                 },
                 label = { Text("Content", color = simpleTextColor) },
                 shape = RoundedCornerShape(cornerRadius),
+                textStyle = TextStyle(color = simpleTextColor),
                 modifier = Modifier
                     .fillMaxWidth()
                     .heightIn(min = 150.dp),
 
                 )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
 
             ImagePickerButton(
                 text = "Pick Image",
+
                 onImagePicked = { uri ->
                     if (uri != null) {
 
@@ -121,7 +125,7 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
                 Text("Please fill in both title and content.", color = Color.Red)
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = {
@@ -134,13 +138,15 @@ fun CreateRequestScreen(viewModel: MainViewModel, userEmail: String, onSubmissio
                         showError = true
                     }
                 },
-
-
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(cornerRadiusBtn),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF3C3F4A), // Set the button background color
+                    containerColor = Color(4280626236), // Set the button background color
                     contentColor = onBackgroundColor),
             ) {
-                Text("Submit", fontSize = 18.sp)
+                Text("Submit", fontSize = 24.sp)
             }
             imageUri?.let { uri ->
                 Card(

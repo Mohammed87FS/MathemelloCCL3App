@@ -41,7 +41,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,6 +50,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.cc221045.mathemelloccl3.data.LikedPost
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -71,10 +71,10 @@ fun PostsListScreen(
     val posts = viewModel.posts
     var searchQuery by remember { mutableStateOf("") }
 
-    val darkBackground = Color(0xFF2D303B) // Replace with the exact color from the screenshot
+    val darkBackground = Color(4279705391) // Replace with the exact color from the screenshot
     val textColor = Color(0xFF60A491)
-    val simpleTextColor = Color(0xFF9D9EA5)
-    val cornerRadius = 20.dp
+    val lightTextColor = Color(0xFF9D9EA5)
+    val cornerRadius = 10.dp
 
 
 
@@ -88,7 +88,7 @@ fun PostsListScreen(
             text = "Posts",
             color = textColor,
             style = TextStyle(
-                fontFamily = FontFamily.Monospace, // or any other font family you want
+                fontFamily = appFontFamily, // or any other font family you want
                 fontWeight = FontWeight.ExtraBold, // choose the desired weight
                 fontSize = 32.sp // set the font size as needed
             ),
@@ -100,7 +100,9 @@ fun PostsListScreen(
             value = searchQuery,
             shape = RoundedCornerShape(cornerRadius),
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Search posts") },
+            placeholder = { Text("Search posts", color = lightTextColor,
+                fontFamily = appFontFamily,
+                fontWeight = FontWeight.Medium) },
             trailingIcon = { // This is the change
                 Icon(
                     imageVector = Icons.Filled.Search, // Assuming you have a Search icon in your material icons
@@ -120,7 +122,13 @@ fun PostsListScreen(
 
 
             if (filteredPosts.isEmpty()) {
-                Text("No posts available", style = MaterialTheme.typography.bodyMedium)
+                Text("No posts available", style = TextStyle(
+                    color = lightTextColor,
+                    fontFamily = appFontFamily,
+                    fontWeight = FontWeight.Medium
+                ),
+
+                    )
             } else {
 
                 LazyColumn {

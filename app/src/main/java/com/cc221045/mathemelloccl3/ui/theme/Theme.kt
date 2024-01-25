@@ -11,6 +11,8 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -128,18 +130,20 @@ fun ImagePickerButton(text: String,onImagePicked: (Uri?) -> Unit) {
 
     Button(
         onClick = { launcher.launch("image/*") },
-        modifier = Modifier.graphicsLayer(scaleX = scale, scaleY = scale),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
         elevation = ButtonDefaults.buttonElevation(defaultElevation = elevation),
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(30),
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
+            containerColor = Color(4280626236)
         )
     ) {
         Text(
             text = text,
-            fontSize = 16.sp,
+            fontSize = 24.sp,
             fontWeight = FontWeight.Medium,
-            color = Color.White
+            color = Color(4284523665)
         )
     }
 

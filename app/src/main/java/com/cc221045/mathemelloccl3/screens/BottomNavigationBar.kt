@@ -1,7 +1,6 @@
 package com.cc221045.mathemelloccl3.screens
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -22,11 +21,11 @@ import com.google.firebase.auth.FirebaseAuth
 @Composable
 fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewModel) {
     val currentRoute = getCurrentRoute(navController)
-    val darkBackground = Color(0xFF4A4553) // Replace with the exact color from the screenshot
+    val darkBackground =  Color(4280626236) // Replace with the exact color from the screenshot
     val textColor = Color(0xFF60A491)
     val simpleTextColor = Color(0xFF9D9EA5)
     val simpleiconColor = Color(0xFFE9E9E9)
-    val buttonColor = Color(0xFF363942) // Replace with the exact button color from the screenshot
+    val buttonColor = Color(4280626236) // Replace with the exact button color from the screenshot
 
 
     NavigationBar(
