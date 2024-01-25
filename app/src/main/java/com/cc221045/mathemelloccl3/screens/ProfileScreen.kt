@@ -1,25 +1,37 @@
 package com.cc221045.mathemelloccl3.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.cc221045.mathemelloccl3.R
 import com.cc221045.mathemelloccl3.Screen
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
+
 
 
 @Composable
@@ -36,22 +48,35 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             .fillMaxSize()
             .background(darkBackground) // Apply the background color here
     )
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier
+        .padding(16.dp)
 
+            .fillMaxSize()
 
-        Button(
-            colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
-            shape = RoundedCornerShape(cornerRadius),
-            onClick = {
-                viewModel.logout()
-                navController.navigate(Screen.Login.route) {
-                    popUpTo(Screen.PostsList.route) { inclusive = true }
-                }
-            }) {
-            Text("Logout", color = textColor, fontSize = 18.sp)
+        .background(darkBackground)
+        .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+
+    ) {
+        if ( FirebaseAuth.getInstance().currentUser?.email !=null  ){
+
+            Text("${FirebaseAuth.getInstance().currentUser?.email }",color = textColor, fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
+                shape = RoundedCornerShape(cornerRadius),
+                onClick = {
+
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.PostsList.route) { inclusive = true }
+                    }
+                    viewModel.logout()
+                }) {
+                Text("Logout", color = textColor, fontSize = 18.sp)}
+
 
         }
-        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com" ){
+        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"&& FirebaseAuth.getInstance().currentUser?.email !=null  ){
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
@@ -78,7 +103,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                 }) {
                 Text("Posts", color = textColor, fontSize = 18.sp)
             }}
-        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com" ){
+        if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"&& FirebaseAuth.getInstance().currentUser?.email !=null  ){
             Spacer(modifier = Modifier.height(8.dp))
             Button(
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
@@ -91,6 +116,8 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                 }) {
                 Text("Liked Posts", color = textColor, fontSize = 18.sp)
             }}
+
+
     }
 
 }
