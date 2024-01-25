@@ -11,6 +11,6 @@ data class Request(
     val content: String,
     val timestamp: Long,
     val imageUrl: String,
-    val isChecked: Boolean
+    var isChecked: Boolean = false
 
 )

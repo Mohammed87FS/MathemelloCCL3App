@@ -150,11 +150,12 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
 @Composable
 fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked: () -> Unit) {
 
-    var isChecked by remember { mutableStateOf(request.isChecked) }
+    var isChecked by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(request.requestId) {
         isChecked = viewModel.isRequestChecked(request.requestId)
+        Log.d("AdminRequestItem", "LaunchedEffect triggered for requestId: ${request.requestId}, isChecked: $isChecked")
     }
     val imagePainter = rememberAsyncImagePainter(model = request.imageUrl)
     Card(

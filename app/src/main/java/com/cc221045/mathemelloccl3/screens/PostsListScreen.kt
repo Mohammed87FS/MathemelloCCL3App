@@ -252,15 +252,15 @@ fun UserPostItem(
         rememberAsyncImagePainter(model = imageUrl)
     }
 
-    // Fetch the current user's email
+
     val userEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
-    // State to keep track of whether the post is liked
     var isLiked by remember { mutableStateOf(false) }
 
-    // Check if the post is liked whenever post.id or userEmail changes
+
     LaunchedEffect(post.id, userEmail) {
         isLiked = viewModel.isPostLiked(post.id, userEmail)
+        Log.d("AdminRequestItempp", "LaunchedEffect triggered for requestId: ${post.id}, isChecked: $isLiked")
     }
 
     Card(

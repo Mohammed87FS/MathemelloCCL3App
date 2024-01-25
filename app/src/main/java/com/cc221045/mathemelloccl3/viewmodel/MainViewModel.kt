@@ -125,6 +125,26 @@ class MainViewModel(
         }
     }
 
+    fun addRequest(
+        userEmail: String,
+        title: String,
+        content: String,
+        imageUrl:String
+    ) {
+        viewModelScope.launch {
+            val newRequest =
+                Request(
+                    userEmail = userEmail,
+                    title = title,
+                    content = content,
+                    timestamp = System.currentTimeMillis(),
+                    imageUrl=imageUrl,
+
+                )
+            requestDao.insertRequest(newRequest)
+        }
+    }
+
     private val _selectedImageUri = MutableLiveData<Uri?>()
     val selectedImageUri: MutableLiveData<Uri?> = _selectedImageUri
 
@@ -171,24 +191,7 @@ class MainViewModel(
         }
     }
 
-    fun addRequest(
-        userEmail: String,
-        title: String,
-        content: String,imageUrl:String
-    ) {
-        viewModelScope.launch {
-            val newRequest =
-                Request(
-                    userEmail = userEmail,
-                    title = title,
-                    content = content,
-                    timestamp = System.currentTimeMillis(),
-                    imageUrl=imageUrl,
-                    isChecked = false
-                )
-            requestDao.insertRequest(newRequest)
-        }
-    }
+
 
 
 
@@ -247,7 +250,9 @@ class MainViewModel(
     }
 
     suspend fun isRequestChecked(requestId:Long):Boolean{
-        return requestDao.isCheckedRequest(requestId) != null
+        val isChecked = requestDao.isCheckedRequest(requestId) ?: false
+        Log.d("MainViewModel", "isRequestChecked - requestId: $requestId, isChecked: $isChecked")
+        return isChecked
 
     }
 
