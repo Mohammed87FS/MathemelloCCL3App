@@ -75,7 +75,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                     }
                     viewModel.logout()
                 }) {
-                Text("Logout", color = textColor, fontSize = 18.sp)}
+                Text("Logout", color = textColor, fontSize = 24.sp)}
 
 
         }
@@ -94,7 +94,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                         popUpTo(Screen.PostsList.route) { inclusive = true }
                     }
                 }) {
-                Text("My requests", color = textColor, fontSize = 18.sp)
+                Text("My requests", color = textColor, fontSize = 24.sp)
             }}
 
         if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com" ){
@@ -110,7 +110,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                     popUpTo(Screen.RequestsList.route) { inclusive = true }
                 }
                 }) {
-                Text("Posts", color = textColor, fontSize = 18.sp)
+                Text("Posts", color = textColor, fontSize = 24.sp)
             }}
         if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"&& FirebaseAuth.getInstance().currentUser?.email !=null  ){
             Spacer(modifier = Modifier.height(24.dp))
@@ -127,7 +127,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                         popUpTo(Screen.PostsList.route) { inclusive = true }
                     }
                 }) {
-                Text("Liked Posts", color = textColor, fontSize = 18.sp)
+                Text("Liked Posts", color = textColor, fontSize = 24.sp)
             }}
 
 
