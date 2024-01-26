@@ -19,6 +19,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
@@ -155,12 +159,11 @@ fun AdminPostItem(
     val imagePainter = rememberAsyncImagePainter(model = post.imageUrl)
     val buttonColor = Color(0xFF3C3F4A)
     Card(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = MaterialTheme.shapes.extraSmall,
+        colors = CardDefaults.cardColors(containerColor = Color(4280626236)) // Set the card background color here
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -175,7 +178,7 @@ fun AdminPostItem(
             )
 
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(34.dp))
 // Image
             post.imageUrl?.let { imageUrl ->
                 Card(
@@ -203,22 +206,52 @@ fun AdminPostItem(
                         val throwable = errorState.result.throwable
                         Log.e("PostItem", "Error loading image: ${throwable.message}")
                     }
-                    Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
+                    Spacer(modifier = Modifier.width(24.dp)) // Add space between image and text
 
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        modifier = Modifier.fillMaxWidth(),
-                    ) {
-                        if (viewModel.isAdmin) {
-                            AnimatedButton(
-                                text = "Edit",
-                                onClick = { navController.navigate("editPost/${post.id}") },
+
+                }
+
+
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    if (viewModel.isAdmin) {
+
+
+
+                        IconButton(
+                            onClick = {
+                                viewModel.deletePost(post)
+                            },
+                        ) {
+                            Icon(
+                                imageVector =Icons.Filled.Delete,
+                                contentDescription =  "Delete",
+                                tint =
+                                        Color(0xFF9B9B9B)
                             )
-                            AnimatedButton(text = "Delete", onClick = { viewModel.deletePost(post) })
                         }
+                        IconButton(
+                            onClick = {
+                                navController.navigate("editPost/${post.id}")
+                            },
+                        ) {
+                            Icon(
+                                imageVector =Icons.Filled.Create,
+                                contentDescription =  "Edit",
+                                tint = Color(0xFF60A491)
+
+
+                            )
+                        }
+
+
+
                     }
                 }
             }
+
         }}}
 
 
@@ -230,7 +263,7 @@ fun SimplePostItem(likedPost: LikedPost) {
             .fillMaxWidth()
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C3F4A)) // Set the card background color here
+        colors = CardDefaults.cardColors(containerColor = Color(4280626236)) // Set the card background color here
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -277,6 +310,7 @@ fun UserPostItem(
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         shape = MaterialTheme.shapes.extraSmall,
+        colors = CardDefaults.cardColors(containerColor = Color(4280626236))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(
@@ -289,6 +323,7 @@ fun UserPostItem(
                 text = post.content,
                 style = MaterialTheme.typography.bodyMedium,
             )
+            Spacer(modifier = Modifier.width(34.dp))
 
             // Conditionally display the image if the URL is available
             imagePainter?.let {

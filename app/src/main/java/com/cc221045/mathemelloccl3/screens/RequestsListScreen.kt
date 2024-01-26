@@ -3,8 +3,10 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,8 +19,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,8 +41,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
@@ -150,7 +157,7 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
 
     var isChecked by remember { mutableStateOf(false) }
 
-
+    val simpleTextColor = Color(4284375919)
     LaunchedEffect(request.requestId) {
         isChecked = viewModel.isRequestChecked(request.requestId)
         Log.d("AdminRequestItem", "LaunchedEffect triggered for requestId: ${request.requestId}, isChecked: $isChecked")
@@ -161,15 +168,15 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C3F4A)) // Set the card background color here
+        colors = CardDefaults.cardColors(containerColor = Color(4280626236)) // Set the card background color here
 
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(request.title, style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(request.content, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(request.content, style = MaterialTheme.typography.bodySmall  )
+
+            Spacer(modifier = Modifier.width(24.dp))
 // Image
             request.imageUrl?.let { imageUrl ->
                 Card(
@@ -196,12 +203,29 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
                         val throwable = errorState.result.throwable
                         Log.e("PostItem", "Error loading image: ${throwable.message}")
                     }
-                    Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
+                    Spacer(modifier = Modifier.width(24.dp)) // Add space between image and text
 
                 }
+                androidx.compose.material.Text(
+                    buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                color = simpleTextColor,
+                                fontFamily = appFontFamily,
+                                fontWeight = FontWeight.Medium, fontSize = 10.sp
+                            )
+                        ) {
+                            append("Email: ${request.userEmail}")
+                        }
+
+                    }
+                )
 
 
-
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
 
                 IconButton(
                     onClick = {
@@ -211,17 +235,22 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
                     },
                 ) {
                     Icon(
-                        imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
+                        imageVector = if (isChecked) Icons.Filled.CheckCircle else Icons.Filled.Clear,
                         contentDescription = if (isChecked) "Uncheck" else "Check",
-                        tint = if (isChecked) Color(0xFF60A491) else Color.Gray
+                        tint = if (isChecked) Color(0xFF60A491) else Color(0xFFFF5722)
                     )
-                }
+                }}
 
             }
-            Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
+
+
+
         }
     }
 }
+
+
+
 
 @Composable
 fun UserRequestItem(request: Request,viewModel: MainViewModel) {
@@ -239,7 +268,11 @@ fun UserRequestItem(request: Request,viewModel: MainViewModel) {
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF3C3F4A)) // Set the card background color here
+        colors = CardDefaults.cardColors(containerColor = Color(4280626236))
+
+
+
+
 
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -279,18 +312,21 @@ fun UserRequestItem(request: Request,viewModel: MainViewModel) {
                 }
 
 
-
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
 
 
                     Icon(
-                        imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
+                        imageVector = if (isChecked) Icons.Filled.CheckCircle else Icons.Filled.Clear,
                         contentDescription = if (isChecked) "Uncheck" else "Check",
-                        tint = if (isChecked) Color(0xFF60A491) else Color.Gray
+                        tint = if (isChecked) Color(0xFF60A491) else Color(0xFFFF5722)
                     )
-                }
+                }}
 
             }
-            Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
+
         }
     }
 

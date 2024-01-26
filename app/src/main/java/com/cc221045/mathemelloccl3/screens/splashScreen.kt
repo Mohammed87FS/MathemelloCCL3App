@@ -65,7 +65,7 @@ fun SplashScreen(navController: NavController, viewModel: MainViewModel) {
                 style = TextStyle(
                     fontFamily = appFontFamily, // or any other font family you want
                     fontWeight = FontWeight.ExtraBold, // choose the desired weight
-                    fontSize = 38.sp // // set the font size as needed
+                    fontSize = 40.sp // // set the font size as needed
                 ),
                 modifier = Modifier.padding(bottom = 16.dp),
                 color = textColor,
