@@ -32,6 +32,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -187,6 +188,7 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                     }
                 },
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth() // Fills the max width of the parent, you can adjust this value as needed
                     .height(50.dp), // Sets the height of the button, adjust this value as needed
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonBackgroundColor),

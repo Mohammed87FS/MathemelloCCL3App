@@ -15,6 +15,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -62,6 +63,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             Spacer(modifier = Modifier.height(54.dp))
             Button(
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
@@ -81,6 +83,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
@@ -98,6 +101,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
@@ -112,6 +116,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
             Spacer(modifier = Modifier.height(24.dp))
             Button(
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                     .fillMaxWidth()
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
