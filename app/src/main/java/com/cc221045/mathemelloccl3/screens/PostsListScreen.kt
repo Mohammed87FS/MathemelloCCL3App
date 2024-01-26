@@ -216,7 +216,7 @@ fun AdminPostItem(
                     horizontalArrangement = Arrangement.End,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    if (viewModel.isAdmin) {
+
 
 
 
@@ -252,7 +252,7 @@ fun AdminPostItem(
                 }
             }
 
-        }}}
+        }}
 
 
 @Composable
@@ -331,7 +331,7 @@ fun UserPostItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(8.dp),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(8.dp),
                     elevation = CardDefaults.cardElevation(4.dp)
                 ) {
                     Image(
