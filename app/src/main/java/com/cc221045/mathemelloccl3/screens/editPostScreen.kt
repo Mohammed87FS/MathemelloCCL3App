@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cc221045.mathemelloccl3.data.Post
 import com.cc221045.mathemelloccl3.ui.theme.AnimatedButton
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,11 +48,21 @@ fun EditPostScreen(
     var isLoading by remember { mutableStateOf(true) }
     var posts by remember { mutableStateOf(listOf<Post>()) }
 
-    val darkBackground = Color(0xFF2D303B) // Replace with the exact color from the screenshot
-    val textColor = Color(0xFF60A491)
-    val simpleTextColor = Color(0xFF9D9EA5)
+
+
+
     val buttonColor = Color(0xFF3C3F4A) // Replace with the exact button color from the screenshot
-    val cornerRadius = 20.dp
+    val errorColor = Color.Red // Or any specific shade of red you want for error messages
+    val textFieldColor = Color.Gray // Replace with the exact text field color from the screenshot
+
+    val onBackgroundColor = Color(4284523665)
+
+    val textColor = Color(4284523665)
+    val simpleTextColor = Color(0xFF9D9EA5)
+    val darkBackground = Color(4279705391)
+    val buttonBackgroundColor = Color(0xFF3C3F4A)// button color
+    val cornerRadius = 10.dp
+    val cornerRadiusBtn = 15.dp
 
     LaunchedEffect(postId) {
         currentPost = viewModel.getPostById(postId)
@@ -81,41 +94,51 @@ fun EditPostScreen(
         ) {
             Text(
                 text = "Edit Post",
-                color = textColor,
                 style = TextStyle(
-                    fontFamily = FontFamily.Monospace, // or any other font family you want
+                    fontFamily = appFontFamily, // or any other font family you want
                     fontWeight = FontWeight.ExtraBold, // choose the desired weight
                     fontSize = 32.sp // set the font size as needed
                 ),
                 modifier = Modifier.padding(bottom = 16.dp),
+                color = textColor,
             )
 
             OutlinedTextField(
+
+
+
+
                 value = title,
-                onValueChange = { title = it },
-                label = { Text("Title") },
                 shape = RoundedCornerShape(cornerRadius),
-                modifier = Modifier.fillMaxWidth(),
+                onValueChange = {
+                    title = it
+
+                },
+                label = { Text("Title") },
+                modifier = Modifier.fillMaxWidth()
 
                 )
 
             Spacer(modifier = Modifier.height(8.dp))
-
             OutlinedTextField(
                 value = content,
-                onValueChange = { content = it },
-                label = { Text("Content") },
                 shape = RoundedCornerShape(cornerRadius),
-                modifier =
-                Modifier
+                onValueChange = {
+                    content = it
+
+                },
+                label = { Text("Content") },
+                modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 150.dp),
+                    .heightIn(min = 150.dp)
+
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            AnimatedButton(
-                text = "Save Changes",
+
+            Button(
                 onClick = {
                     currentPost?.let { post ->
                         val updatedPost = post.copy(title = title, content = content)
@@ -123,7 +146,18 @@ fun EditPostScreen(
                         onFinishedEditing()
                     }
                 },
-            )
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(cornerRadiusBtn),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(4280626236), // Set the button background color
+                    contentColor = onBackgroundColor),
+            ) {
+                Text("Update", fontSize = 24.sp)
+            }
+
+
         }
     }
 }
