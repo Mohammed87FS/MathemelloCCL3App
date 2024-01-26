@@ -136,6 +136,9 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                     backgroundColor = backgroundColor // Set the background color to match the app's theme
                 )
             )
+            Spacer(modifier = Modifier.height(5.dp))
+
+
             OutlinedTextField(
                 value = password,
                 onValueChange = { password = it },
@@ -213,12 +216,12 @@ fun LoginScreen(viewModel: MainViewModel, navController: NavController) {
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = simpleTextColor,
                             fontFamily = appFontFamily,
-                            fontWeight = FontWeight.Medium, fontSize = 14.sp)) {
+                            fontWeight = FontWeight.Medium, fontSize = 10.sp)) {
                             append("Don't have an account? ")
                         }
                         withStyle(style = SpanStyle(color = onBackgroundColor,
                             fontFamily = appFontFamily,
-                            fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)) {
+                            fontWeight = FontWeight.ExtraBold, fontSize = 10.sp)) {
                             append("Sign Up")
                         }
                     }

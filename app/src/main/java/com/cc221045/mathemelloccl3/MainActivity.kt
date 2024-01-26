@@ -47,15 +47,15 @@ import com.cc221045.mathemelloccl3.viewmodel.MainViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 sealed class Screen(val route: String, val label: String, val icon: ImageVector) {
-    data object PostsList : Screen("postsList", "postsList", Icons.Filled.List)
-    data object CreatePost : Screen("createPost", "createPost", Icons.Filled.Add)
+    data object PostsList : Screen("postsList", "Posts", Icons.Filled.List)
+    data object CreatePost : Screen("createPost", "Add Post", Icons.Filled.Add)
 
     data object LikedPosts : Screen("likedPosts", "likedPosts", Icons.Filled.Favorite)
     data object Login : Screen("login", "login", Icons.Filled.ExitToApp)
-    data object ProfileScreen : Screen("profile", "profile", Icons.Filled.Person)
+    data object ProfileScreen : Screen("profile", "Profile", Icons.Filled.Person)
     data object SignUp : Screen("signup", "signup", Icons.Filled.AccountCircle)
-    data object CreateRequest : Screen("createRequest", "createRequest", Icons.Filled.Add)
-    data object RequestsList : Screen("requestsList", "requestsList", Icons.Filled.List)
+    data object CreateRequest : Screen("createRequest", "Add Request", Icons.Filled.Add)
+    data object RequestsList : Screen("requestsList", "Requests", Icons.Filled.List)
     data object Splash : Screen("splashScreen", "splashScreen", Icons.Filled.DateRange)
 
 }

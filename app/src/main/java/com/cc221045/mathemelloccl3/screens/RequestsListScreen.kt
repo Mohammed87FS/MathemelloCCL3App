@@ -11,17 +11,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,20 +33,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import com.cc221045.mathemelloccl3.data.Request
+import com.cc221045.mathemelloccl3.ui.theme.appFontFamily
 import com.cc221045.mathemelloccl3.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 
@@ -62,11 +56,11 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
     var allRequests by remember { mutableStateOf(listOf<Request>()) }
     var filteredRequests by remember { mutableStateOf(listOf<Request>()) }
 
-    val darkBackground = Color(0xFF2D303B) // Replace with the exact color from the screenshot
+    val darkBackground = Color(4279705391) // Replace with the exact color from the screenshot
     val textColor = Color(0xFF60A491)
     val simpleTextColor = Color(0xFF9D9EA5)
     val buttonColor = Color(0xFF3C3F4A) // Replace with the exact button color from the screenshot
-    val cornerRadius = 20.dp
+    val cornerRadius = 10.dp
 
     LaunchedEffect(userEmail, isAdmin) {
         allRequests = if (FirebaseAuth.getInstance().currentUser?.email =="admin@admin.com") {
@@ -76,7 +70,6 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
         }
         filteredRequests = allRequests
     }
-
     LaunchedEffect(searchQuery) {
         filteredRequests = if (searchQuery.isEmpty()) {
             allRequests
@@ -97,7 +90,7 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
             text = "Requests",
             color = textColor,
             style = TextStyle(
-                fontFamily = FontFamily.Monospace, // or any other font family you want
+                fontFamily = appFontFamily, // or any other font family you want
                 fontWeight = FontWeight.ExtraBold, // choose the desired weight
                 fontSize = 32.sp // set the font size as needed
             ),
@@ -107,11 +100,14 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { searchQuery = it },
-            placeholder = { Text("Search requests") },
+            placeholder = { Text("Search requests", color = simpleTextColor,
+                fontFamily = appFontFamily,
+                fontWeight = FontWeight.Medium) },
             trailingIcon = { // This is the change
                 Icon(
                     imageVector = Icons.Filled.Search, // Assuming you have a Search icon in your material icons
                     contentDescription = "Search",
+                    tint = simpleTextColor,
                     modifier = Modifier.clickable { /* Icon click logic here */ }
                 )
             },
@@ -123,7 +119,9 @@ fun RequestsListScreen(viewModel: MainViewModel, userEmail: String, isAdmin: Boo
 
 
         if (filteredRequests.isEmpty()) {
-            Text("No requests available", style = MaterialTheme.typography.bodyLarge)
+            Text("No requests available", color = simpleTextColor,
+                fontFamily = appFontFamily,
+                fontWeight = FontWeight.Medium)
         } else {
             LazyColumn {
                 items(filteredRequests) { request ->
@@ -171,7 +169,6 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
             Spacer(modifier = Modifier.height(4.dp))
             Text(request.content, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
-
             Spacer(modifier = Modifier.width(16.dp))
 // Image
             request.imageUrl?.let { imageUrl ->
@@ -206,25 +203,25 @@ fun AdminRequestItem(request: Request, viewModel: MainViewModel,  onCheckClicked
 
 
 
-                    IconButton(
-                        onClick = {
-                            isChecked=!isChecked
-                            viewModel.toggleCheckedRequest(request.requestId)
-                            onCheckClicked()
-                        },
-                    ) {
-                        Icon(
-                            imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
-                            contentDescription = if (isChecked) "Uncheck" else "Check",
-                            tint = if (isChecked) Color(0xFF60A491) else Color.Gray
-                        )
-                    }
-
+                IconButton(
+                    onClick = {
+                        isChecked=!isChecked
+                        viewModel.toggleCheckedRequest(request.requestId)
+                        onCheckClicked()
+                    },
+                ) {
+                    Icon(
+                        imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
+                        contentDescription = if (isChecked) "Uncheck" else "Check",
+                        tint = if (isChecked) Color(0xFF60A491) else Color.Gray
+                    )
                 }
-                Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
+
             }
+            Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
         }
     }
+}
 
 @Composable
 fun UserRequestItem(request: Request,viewModel: MainViewModel) {
@@ -250,7 +247,6 @@ fun UserRequestItem(request: Request,viewModel: MainViewModel) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(request.content, style = MaterialTheme.typography.bodyMedium)
             Spacer(modifier = Modifier.height(4.dp))
-
             Spacer(modifier = Modifier.width(16.dp))
 // Image
             request.imageUrl?.let { imageUrl ->
@@ -260,6 +256,7 @@ fun UserRequestItem(request: Request,viewModel: MainViewModel) {
                         .padding(8.dp),
                     shape = RoundedCornerShape(8.dp), // Define the shape of the card
                     elevation = CardDefaults.cardElevation(4.dp)
+
                 ) {
                     Image(
                         painter = imagePainter,
@@ -280,14 +277,20 @@ fun UserRequestItem(request: Request,viewModel: MainViewModel) {
                     Spacer(modifier = Modifier.width(16.dp)) // Add space between image and text
 
                 }
-                Icon(
-                    imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
-                    contentDescription = if (isChecked) "Uncheck" else "Check",
-                    tint = if (isChecked) Color(0xFF60A491) else Color.Gray
-                )
 
-                Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
+
+
+
+
+                    Icon(
+                        imageVector = if (isChecked) Icons.Filled.Check else Icons.Filled.Clear,
+                        contentDescription = if (isChecked) "Uncheck" else "Check",
+                        tint = if (isChecked) Color(0xFF60A491) else Color.Gray
+                    )
+                }
+
             }
+            Text("Email: ${request.userEmail}", style = MaterialTheme.typography.bodySmall)
         }
-    }}
+    }
 

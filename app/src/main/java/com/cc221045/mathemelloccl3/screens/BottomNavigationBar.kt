@@ -55,7 +55,7 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
                     label = { Text(screen.label) },
                     selected = currentRoute == screen.route,
                     modifier = Modifier
-                      
+
                         .background(darkBackground),
                             colors = NavigationBarItemDefaults.colors(
                         unselectedIconColor = simpleiconColor, // Set unselected item icon color
@@ -67,7 +67,8 @@ fun BottomNavigationBar(navController: NavHostController, viewModel: MainViewMod
                         if (currentRoute != screen.route) {
                             navController.navigate(screen.route)
                         }
-                    }
+                    },
+
                 )
             }
         }

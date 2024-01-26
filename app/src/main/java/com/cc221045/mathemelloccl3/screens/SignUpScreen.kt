@@ -128,7 +128,7 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
 
                     )
             )
-
+            Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .height(60.dp)
@@ -154,7 +154,7 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
                     unfocusedBorderColor = textFieldColor
                 )
             )
-
+            Spacer(modifier = Modifier.height(5.dp))
             OutlinedTextField(
                 modifier = Modifier
                     .height(60.dp)
@@ -223,11 +223,11 @@ fun SignUpScreen(viewModel: MainViewModel, navController: NavController, auth: F
             TextButton(onClick = { navController.navigate(Screen.Login.route) }) {
                 Text(
                     buildAnnotatedString {
-                        withStyle(style = SpanStyle(color = Color.Gray, fontSize = 14.sp)) {
+                        withStyle(style = SpanStyle(color = Color.Gray, fontSize = 10.sp)) {
                             append("Already have an account? ")
                         }
                         withStyle(style = SpanStyle(color = textColor, fontFamily = appFontFamily, // or any other font family you want
-                            fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)) {
+                            fontWeight = FontWeight.ExtraBold, fontSize = 10.sp)) {
                             append("Login")
                         }
                     }

@@ -59,7 +59,7 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                 fontFamily = appFontFamily, // or any other font family you want
                 fontWeight = FontWeight.ExtraBold, // choose the desired weight
                 fontSize = 32.sp)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(54.dp))
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -109,8 +109,11 @@ fun ProfileScreen(viewModel: MainViewModel, navController: NavController,isAdmin
                 Text("Posts", color = textColor, fontSize = 18.sp)
             }}
         if (FirebaseAuth.getInstance().currentUser?.email !="admin@admin.com"&& FirebaseAuth.getInstance().currentUser?.email !=null  ){
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
             Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
                 colors = ButtonDefaults.buttonColors(backgroundColor = buttonColor),
                 shape = RoundedCornerShape(cornerRadius),
                 onClick = {
